@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Contador de Tempo</title>
+    <h2>Even Though I Walk Through the Valley of the Shadow of Death I Fear No Evil. (I Have No Enemies Edition)</h2>
+    <style>
+        body {
+            background-image: url("https://i.pinimg.com/originals/ef/08/d1/ef08d117f320d1e142f79c4413e0a2bf.gif");
+
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 50px;
+            color: red;
+            font-size: 25px;
+            font-style: oblique;
+        }
+
+        .countdown {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+
+        .button {
+            font-family: Georgia, 'Times New Roman', Times, serif;
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin-top: 20px;
+            cursor: pointer;
+            background-image: url("https://mir-s3-cdn-cf.behance.net/project_modules/max_632/cf563c98856813.5ee5f89f42006.gif");
+        }
+
+        .button:hover {
+            background-color: #3e8e41;
+        }
+
+        #dayscounter {
+           color: white;
+        }
+
+        h2 {
+            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+            color: white
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        footer h3 {
+            display: inline-block;
+            padding: 10px;
+            font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+            color: black;
+            background-color: white;
+        }
+
+        footer img {
+            width: 300px;
+            height: 290px;
+        }
+
+        p {
+            color: white;
+        }
+        .clique-button {
+            padding: 10px 20px;
+            font-size: 18px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+    </style>
+</head>
+<button class="clique-button" id="contador" onclick="contarClique()">Clique Aqui</button>
+<script>
+   var contador = 0;
+
+function contarClique() {
+    contador++;
+
+    if (contador === 10) {
+        alert("Parabéns! Você chegou a 10 cliques. Continue assim!");
+    } else if (contador === 50) {
+        alert("Impressionante! Você alcançou 50 cliques. Continue sua jornada!");
+    } else if (contador === 100) {
+        alert("Incrível! Você atingiu a marca de 100 cliques. Continue superando limites!");
+    }
+    
+    document.getElementById("contador").innerText = "Clique Aqui (" + contador + ")";
+    
+}
+</script>
+<body>
+    <a href="C:\Users\Servidor\Desktop\siteinexus\GStuff\TMBCALC.html">Clique aqui para calcular TMB</a>
+
+    <div class="container">
+        <div>
+            <label for="hour">Hora (no formato 24h):</label>
+            <p>Resta esse tempo para o horário decidido:</p>
+            <input type="text" id="hour" placeholder="hh:mm:ss">
+        </div>
+        <div class="countdown"></div>
+        <button class="button" onclick="startCountdown()">Começar</button>
+    </div>
+
+    <script>
+        function startCountdown() {
+            var hourInput = document.querySelector("#hour").value;
+            var countDownDate = new Date().setHours(hourInput.substring(0, 2), hourInput.substring(3, 5), hourInput.substring(6, 8), 0);
+            if (isNaN(countDownDate)) {
+                alert("Por favor, insira uma hora válida no formato 'hh:mm:ss'!");
+                return;
+            }
+            var x = setInterval(function () {
+                var now = new Date().getTime();
+                var distance = countDownDate - now;
+                var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+                document.querySelector(".countdown").innerHTML = hours + "h " + minutes + "m " + seconds + "s ";
+                if (distance < 0) {
+                    clearInterval(x);
+                    document.querySelector(".countdown").innerHTML = "parabéns, mais um dia vencido!!";
+                    document.getElementById("myAudio").play(); // reproduz o som quando o tempo expirar
+                }
+            }, 1000);
+        }
+    </script>
+  <iframe width="300" height="295" src="https://www.youtube.com/embed/UV0mhY2Dxr0?si=rtFxHR6CubkmeC-M" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+    <img src="https://i.pinimg.com/564x/cc/6d/29/cc6d2968d4dc03162482cee1588287f3.jpg" width="300px"
+        height="295px" />
+    <footer>
+        <div id="daysCounter"></div>
+        <h3>Dias faltando até:</h3>
+        <input type="date" id="targetDate">
+        <button onclick="calculateDays()">Calcular</button>
+        <audio id="myAudio" src="C:\Users\Servidor\Desktop\siteinexus\GStuff\sons\sundown_CdF4VerOfrI.mp3"></audio>
+        <script>
+            function calculateDays() {
+                var targetDateInput = document.querySelector("#targetDate").value;
+                var targetDate = new Date(targetDateInput);
+                if (isNaN(targetDate)) {
+                    alert("Por favor, insira uma data válida!");
+                    return;
+                }
+                var currentDate = new Date();
+                var timeDifference = targetDate.getTime() - currentDate.getTime();
+                var daysDifference = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
+                document.querySelector("#daysCounter").innerHTML = "Faltam " + daysDifference + " dias até " + targetDate.toLocaleDateString();
+            }
+       
+        </script>
+        <a href="fullcalendar-master/fullcalendar.html">Clique aqui para entrar no calendário</a>
+        <iframe class="scribd_iframe_embed" title="Dokkōdō.docx" src="https://www.scribd.com/embeds/486320959/content?start_page=1&view_mode=scroll&access_key=key-Qz8AoEK3n7f6z5oLBNyp" tabindex="0" data-auto-height="true" data-aspect-ratio="0.7080062794348508" scrolling="no" width="100%" height="600" frameborder="0"></iframe><p  style="   margin: 12px auto 6px auto;   font-family: Helvetica,Arial,Sans-serif;   font-style: normal;   font-variant: normal;   font-weight: normal;   font-size: 14px;   line-height: normal;   font-size-adjust: none;   
+
+  
+        "A ira é um sentimento momentâneo que gera consequências não momentâneas, uma ira controlada é como um rio fluindo livremente, sem rochas e com as águas claras, já a ira descontrolada deixa a água turva, descontrolada, com uma correnteza muito forte."
+
+</body>
+
+</html>
