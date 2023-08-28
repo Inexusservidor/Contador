@@ -106,7 +106,7 @@ function contarClique() {
 }
 </script>
 <body>
-    <a href="TMBCALC.html">Clique aqui para calcular TMB</a>
+    <a href="C:\Users\Servidor\Desktop\siteinexus\GStuff\TMBCALC.html">Clique aqui para calcular TMB</a>
 
     <div class="container">
         <div>
@@ -119,27 +119,45 @@ function contarClique() {
     </div>
 
     <script>
-        function startCountdown() {
-            var hourInput = document.querySelector("#hour").value;
-            var countDownDate = new Date().setHours(hourInput.substring(0, 2), hourInput.substring(3, 5), hourInput.substring(6, 8), 0);
-            if (isNaN(countDownDate)) {
-                alert("Por favor, insira uma hora válida no formato 'hh:mm:ss'!");
-                return;
-            }
-            var x = setInterval(function () {
-                var now = new Date().getTime();
-                var distance = countDownDate - now;
-                var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-                var seconds = Math.floor((distance % (1000 * 60)) / 1000);
-                document.querySelector(".countdown").innerHTML = hours + "h " + minutes + "m " + seconds + "s ";
-                if (distance < 0) {
-                    clearInterval(x);
-                    document.querySelector(".countdown").innerHTML = "parabéns, mais um dia vencido!!";
-                    document.getElementById("myAudio").play(); // reproduz o som quando o tempo expirar
-                }
-            }, 1000);
+       function startCountdown() {
+    var hourInput = document.querySelector("#hour").value;
+
+    // Lidando com os formatos de hora AM/PM
+    var isPM = hourInput.toLowerCase().includes("pm");
+    var timeComponents = hourInput.match(/\d+/g);
+    if (timeComponents.length < 2) {
+        alert("Eu pedi para você inserir uma hora válida, não um abacaxi.");
+        return;
+    }
+    var hours = parseInt(timeComponents[0]);
+    var minutes = parseInt(timeComponents[1]);
+    if (isNaN(hours) || isNaN(minutes) || hours > 12 || minutes > 59) {
+        alert("Seus números estão mais confusos que uma tartaruga em uma corrida.");
+        return;
+    }
+    if (isPM && hours !== 12) {
+        hours += 12;
+    }
+
+    var countDownDate = new Date();
+    countDownDate.setHours(hours, minutes, 0, 0);
+
+    var x = setInterval(function () {
+        var now = new Date().getTime();
+        var distance = countDownDate - now;
+        if (distance < 0) {
+            clearInterval(x);
+            document.querySelector(".countdown").innerHTML = "Parabéns, mais um dia vencido!";
+            document.getElementById("myAudio").play();
+            return;
         }
+        var hoursLeft = Math.floor(distance / (1000 * 60 * 60));
+        var minutesLeft = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        var secondsLeft = Math.floor((distance % (1000 * 60)) / 1000);
+
+        document.querySelector(".countdown").innerHTML = hoursLeft + "h " + minutesLeft + "m " + secondsLeft + "s ";
+    }, 1000);
+}
     </script>
   <iframe width="300" height="295" src="https://www.youtube.com/embed/UV0mhY2Dxr0?si=rtFxHR6CubkmeC-M" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
     <img src="https://i.pinimg.com/564x/cc/6d/29/cc6d2968d4dc03162482cee1588287f3.jpg" width="300px"
@@ -149,7 +167,7 @@ function contarClique() {
         <h3>Dias faltando até:</h3>
         <input type="date" id="targetDate">
         <button onclick="calculateDays()">Calcular</button>
-        <audio id="myAudio" src="sons/sundown_CdF4VerOfrI.mp3"></audio>
+        <audio id="myAudio" src="C:\Users\Servidor\Desktop\siteinexus\GStuff\sons\sundown_CdF4VerOfrI.mp3"></audio>
         <script>
             function calculateDays() {
                 var targetDateInput = document.querySelector("#targetDate").value;
