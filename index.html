@@ -106,7 +106,7 @@ function contarClique() {
 }
 </script>
 <body>
-    <a href="C:\Users\Servidor\Desktop\siteinexus\GStuff\TMBCALC.html">Clique aqui para calcular TMB</a>
+    <a href="TMBCALC.html">Clique aqui para calcular TMB</a>
 
     <div class="container">
         <div>
@@ -126,7 +126,7 @@ function contarClique() {
     var isPM = hourInput.toLowerCase().includes("pm");
     var timeComponents = hourInput.match(/\d+/g);
     if (timeComponents.length < 2) {
-        alert("Eu pedi para você inserir uma hora válida, não um abacaxi.");
+        alert("Eu pedi para você inserir uma hora válida, não uma burrice seu animal.");
         return;
     }
     var hours = parseInt(timeComponents[0]);
@@ -167,7 +167,7 @@ function contarClique() {
         <h3>Dias faltando até:</h3>
         <input type="date" id="targetDate">
         <button onclick="calculateDays()">Calcular</button>
-        <audio id="myAudio" src="C:\Users\Servidor\Desktop\siteinexus\GStuff\sons\sundown_CdF4VerOfrI.mp3"></audio>
+        <audio id="myAudio" src="sons/sundown_CdF4VerOfrI.mp3"></audio>
         <script>
             function calculateDays() {
                 var targetDateInput = document.querySelector("#targetDate").value;
