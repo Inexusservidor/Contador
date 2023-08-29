@@ -168,6 +168,10 @@ function contarClique() {
         <input type="date" id="targetDate">
         <button onclick="calculateDays()">Calcular</button>
         <audio id="myAudio" src="sons/sundown_CdF4VerOfrI.mp3"></audio>
+         <div class="climate-clock-container">
+            <script src="https://climateclock.world/widget-v2.js" async></script>
+            <climate-clock />
+          </div>
         <script>
             function calculateDays() {
                 var targetDateInput = document.querySelector("#targetDate").value;
