@@ -1,111 +1,89 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-        }
-
-        .calculator {
-            width: 300px;
-            margin: 0 auto;
-            padding: 20px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 10px;
-        }
-
-        input[type="number"] {
-            width: 100%;
-            padding: 8px;
-            margin-bottom: 15px;
-            border: 1px solid #ccc;
-            border-radius: 3px;
-        }
-
-        button {
-            background-color: #4CAF50;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 3px;
-            cursor: pointer;
-        }
-
-        #result {
-            font-size: 18px;
-            margin-top: 15px;
-        }
-    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>Contador de Dias</title>
 </head>
 <body>
-    <div class="calculator">
-        <h2>Calculadora de TMB e NDC</h2>
-        <label for="weight">Peso (kg):</label>
-        <input type="number" id="weight" placeholder="Digite seu peso" required>
-
-        <label for="height">Altura (cm):</label>
-        <input type="number" id="height" placeholder="Digite sua altura" required>
-
-        <label for="age">Idade:</label>
-        <input type="number" id="age" placeholder="Digite sua idade" required>
-
-        <label for="gender">Gênero:</label>
-        <select id="gender" required>
-            <option value="male">Masculino</option>
-            <option value="female">Feminino</option>
-        </select>
-        <label for="activity-level">Nível de Atividade:</label>
-        <select id="activity-level" required>
-            <option value="sedentary">Sedentário (pouco ou nenhum exercício)</option>
-            <option value="lightly-active">Levemente Ativo (exercício leve/esporádico)</option>
-            <option value="moderately-active">Moderadamente Ativo (exercício moderado/regular)</option>
-            <option value="very-active">Muito Ativo (exercício intenso/regular)</option>
-            <option value="super-active">Super Ativo (exercício intenso/diário)</option>
-        </select>
-
-        <button onclick="calculateTMBandNDC()">Calcular TMB e NDC</button>
-
-        <div id="result"></div>
+    <div class="clock">
+        <h1 id="clock"></h1>
     </div>
+    <div class="container">
+        <label for="dataInicial">Data Inicial:</label>
+        <input type="date" id="dataInicial">
 
-    <script>
-        function calculateTMBandNDC() {
-            const weight = parseFloat(document.getElementById("weight").value);
-            const height = parseFloat(document.getElementById("height").value);
-            const age = parseInt(document.getElementById("age").value);
-            const gender = document.getElementById("gender").value;
-            const activityLevel = document.getElementById("activity-level").value;
+        <label for="dataFinal">Data Final:</label>
+        <input type="date" id="dataFinal">
 
-            let tmb = 0;
+        <button onclick="calcularDias()">Calcular</button>
+        <a href="https://www.characterai.com" target="_blank" rel="noopener noreferrer">
+            <button class="redirect-button">Visitar CharacterAI</button>
+        </a>
+<style>
+    body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    margin: 0;
+}
 
-            if (gender === "male") {
-                tmb = 88.362 + (13.397 * weight) + (4.799 * height) - (5.677 * age);
-            } else if (gender === "female") {
-                tmb = 447.593 + (9.247 * weight) + (3.098 * height) - (4.330 * age);
-            }
+.container {
+    margin-top: 20px;
+    text-align: center;
+}
 
-            let ndc = 0;
+.clock {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
 
-            if (activityLevel === "sedentary") {
-                ndc = tmb * 1.2;
-            } else if (activityLevel === "lightly-active") {
-                ndc = tmb * 1.375;
-            } else if (activityLevel === "moderately-active") {
-                ndc = tmb * 1.55;
-            } else if (activityLevel === "very-active") {
-                ndc = tmb * 1.725;
-            } else if (activityLevel === "super-active") {
-                ndc = tmb * 1.9;
-            }
+.redirect-button {
+    margin-top: 10px;
+}
 
-            document.getElementById("result").textContent = "Sua Taxa Metabólica Basal é: " + tmb.toFixed(2) + " calorias por dia.";
-        }
+.resultado {
+    margin-top: 20px;
+}
+</style>
+        <div class="resultado">
+            <p id="diasPassados"></p>
+            <p id="diasRestantes"></p>
+            <p id="tempoRestante"></p>
+        </div>
+    </div>
+    <script> 
+        function calcularDias() {
+    var dataInicial = new Date(document.getElementById("dataInicial").value);
+    var dataFinal = new Date(document.getElementById("dataFinal").value);
+    var agora = new Date();
+
+    var diasPassados = Math.floor((agora - dataInicial) / (1000 * 60 * 60 * 24));
+    var diasRestantes = Math.floor((dataFinal - agora) / (1000 * 60 * 60 * 24));
+
+    var tempoRestante = dataFinal - agora;
+    var segundos = Math.floor(tempoRestante / 1000) % 60;
+    var minutos = Math.floor(tempoRestante / (1000 * 60)) % 60;
+    var horas = Math.floor(tempoRestante / (1000 * 60 * 60)) % 24;
+
+    document.getElementById("diasPassados").innerText = "Dias passados: " + diasPassados;
+    document.getElementById("diasRestantes").innerText = "Dias restantes: " + diasRestantes;
+    document.getElementById("tempoRestante").innerText = "Tempo restante: " + horas + "h " + minutos + "m " + segundos + "s";
+
+    // Relógio
+    var now = new Date();
+    var diaSemana = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
+    var mes = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+
+    var dataFormatada = diaSemana[now.getDay()] + ', ' + now.getDate() + ' de ' + mes[now.getMonth()] + ' de ' + now.getFullYear() + ', ' + now.getHours() + ':' + (now.getMinutes() < 10 ? '0' : '') + now.getMinutes() + ':' + (now.getSeconds() < 10 ? '0' : '') + now.getSeconds();
+
+    document.getElementById('clock').textContent = dataFormatada;
+}
     </script>
+   
 </body>
 </html>
