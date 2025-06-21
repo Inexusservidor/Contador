@@ -16,8 +16,8 @@ const tasks = [
     'Trocar saco de lixo',
     'Verificar a guarita',
     'Trabalhar um pouco no projeto ponto',
-    'Encher o galão de água'
-    'Fazer livro de ocorrências'
+    'Encher o galão de água',
+    'Fazer livro de ocorrências',
 ];
 
 // Carregar estado salvo
