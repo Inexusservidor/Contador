@@ -3,220 +3,253 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SuperTruck Countdown</title>
-
-<!-- Bootstrap 5 -->
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-
-<!-- Google Font -->
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&display=swap" rel="stylesheet">
+<title>Ritual Diário</title>
 
 <style>
-
-body{
-    background: linear-gradient(135deg,#0f2027,#203a43,#2c5364);
-    font-family: 'Orbitron', sans-serif;
-    color: white;
-    min-height:100vh;
+* {
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
 }
 
-.glass-card{
-    background: rgba(255,255,255,0.08);
-    backdrop-filter: blur(10px);
-    border-radius: 20px;
-    padding: 30px;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
-    transition: 0.3s ease-in-out;
+body {
+  margin: 0;
+  padding: 0;
+  background-image: url("https://i.postimg.cc/3JjkTRHV/0e24f9bafcf94ba7dc2b6a0298948223.gif");
+  background-size: cover;
+  background-attachment: fixed;
+  color: white;
+  text-align: center;
+  transition: background 0.5s;
 }
 
-.glass-card:hover{
-    transform: translateY(-5px);
+body.focus {
+  background-color: rgba(0,0,0,0.9);
 }
 
-.countdown{
-    font-size: 60px;
-    font-weight: 700;
-    letter-spacing: 4px;
-    text-shadow: 0 0 15px #00f7ff;
+h2 {
+  margin-top: 20px;
+  font-family: 'Franklin Gothic Medium', Arial, sans-serif;
 }
 
-.btn-gradient{
-    background: linear-gradient(45deg,#00f7ff,#00c3ff);
-    border:none;
-    color:#000;
-    font-weight:bold;
-    transition:0.3s;
+.card {
+  background: rgba(0,0,0,0.65);
+  margin: 20px auto;
+  padding: 20px;
+  border-radius: 12px;
+  max-width: 420px;
 }
 
-.btn-gradient:hover{
-    transform:scale(1.05);
+button {
+  background-color: #4CAF50;
+  border: none;
+  color: white;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.2s;
 }
 
-.click-counter{
-    font-size:20px;
-    font-weight:bold;
+button:hover {
+  background-color: #3e8e41;
+  transform: scale(1.05);
 }
 
-.footer-section{
-    margin-top:60px;
-    font-size:14px;
-    opacity:0.8;
+input {
+  padding: 10px;
+  border-radius: 6px;
+  border: none;
+  width: 90%;
+  margin-top: 10px;
 }
 
-input.form-control{
-    background:rgba(255,255,255,0.1);
-    color:white;
-    border:none;
+.countdown {
+  font-size: 42px;
+  margin-top: 15px;
+  animation: pulse 1s infinite;
 }
 
-input.form-control:focus{
-    background:rgba(255,255,255,0.2);
-    color:white;
-    box-shadow:0 0 10px #00f7ff;
+@keyframes pulse {
+  50% { transform: scale(1.05); }
 }
 
-.toast{
-    background:#000;
-    color:white;
+.feedback {
+  margin-top: 10px;
+  font-weight: bold;
+  min-height: 22px;
 }
 
+.motivacao p {
+  background: rgba(255,255,255,0.9);
+  color: black;
+  padding: 8px 12px;
+  border-radius: 6px;
+  margin: 6px auto;
+  max-width: 800px;
+  text-align: left;
+}
+
+.frase {
+  font-style: italic;
+  opacity: 0.9;
+}
 </style>
 </head>
+
 <body>
 
-<div class="container py-5">
+<h2>Even Though I Walk Through the Valley of the Shadow of Death I Fear No Evil.</h2>
 
-    <h1 class="text-center mb-5">SuperTruck Countdown 🚛</h1>
+<!-- FRASE DO DIA -->
+<div class="card frase" id="dailyPhrase"></div>
 
-    <div class="row g-4">
-
-        <!-- Contador de Hora -->
-        <div class="col-md-6">
-            <div class="glass-card text-center">
-                <h4>Definir Hora (12h)</h4>
-                <input type="text" id="hour" class="form-control my-3" placeholder="08:30:00 PM">
-                <button class="btn btn-gradient w-100" onclick="startCountdown()">Iniciar</button>
-                <div class="countdown mt-4" id="countdown">00:00:00</div>
-            </div>
-        </div>
-
-        <!-- Contador de Data -->
-        <div class="col-md-6">
-            <div class="glass-card text-center">
-                <h4>Contagem de Dias 📅</h4>
-                <input type="date" id="targetDate" class="form-control my-3">
-                <button class="btn btn-gradient w-100" onclick="calculateDays()">Calcular</button>
-                <h3 class="mt-4" id="daysCounter"></h3>
-            </div>
-        </div>
-
-        <!-- Clique Counter -->
-        <div class="col-12">
-            <div class="glass-card text-center">
-                <button class="btn btn-gradient px-5" id="clickBtn" onclick="countClick()">Clique Aqui</button>
-                <div class="click-counter mt-3">Cliques: <span id="clickCount">0</span></div>
-            </div>
-        </div>
-
-    </div>
-
-    <div class="footer-section text-center mt-5">
-        <p>Disciplina. Foco. Evolução diária.</p>
-    </div>
-
+<!-- STREAK -->
+<div class="card">
+  🔥 Streak atual: <span id="streak">0</span> dias<br>
+  🏆 Melhor streak: <span id="bestStreak">0</span>
 </div>
 
-<!-- Toast -->
-<div class="position-fixed bottom-0 end-0 p-3">
-  <div id="liveToast" class="toast align-items-center border-0">
-    <div class="d-flex">
-      <div class="toast-body" id="toastMessage"></div>
-      <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
-    </div>
-  </div>
+<!-- CONTADOR DE CLIQUES -->
+<div class="card">
+  <button id="clickBtn">Clique Aqui</button>
+  <div id="clickInfo" class="feedback"></div>
 </div>
 
-<!-- Bootstrap JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<!-- CONTADOR POR HORÁRIO -->
+<div class="card">
+  <p>Tempo restante para o horário escolhido:</p>
+  <input type="text" id="hourInput" placeholder="08:30:00 PM">
+  <br><br>
+  <button id="startCountdown">Começar</button>
+  <div class="countdown" id="countdown">00:00:00</div>
+</div>
+
+<!-- CONTADOR DE DIAS -->
+<div class="card">
+  <p>Dias faltando até:</p>
+  <input type="date" id="targetDate">
+  <br><br>
+  <button id="calcDays">Calcular</button>
+  <div id="daysResult" class="feedback"></div>
+</div>
+
+<!-- MODO FOCO -->
+<div class="card">
+  <button id="focusBtn">Entrar em modo foco</button>
+</div>
+
+<!-- MOTIVAÇÃO -->
+<div class="card motivacao">
+  <h3>Bushidô</h3>
+  <p>Gi – Retidão</p>
+  <p>Yū – Coragem</p>
+  <p>Jin – Benevolência</p>
+  <p>Rei – Respeito</p>
+  <p>Makoto – Sinceridade</p>
+  <p>Meiyo – Honra</p>
+  <p>Chūgi – Lealdade</p>
+</div>
+
+<audio id="myAudio" src="sons/Still Beating [ ezmp3.cc ].mp3"></audio>
 
 <script>
+/* ===== FRASES ===== */
+const phrases = [
+  "Disciplina é escolher o que você quer mais, e não o que você quer agora.",
+  "O homem que domina a si mesmo não precisa dominar os outros.",
+  "Constância supera intensidade.",
+  "Honra não é aparência, é hábito.",
+  "A mente calma corta mais fundo que a lâmina afiada."
+];
 
-let clickCounter = 0;
+const todayKey = new Date().toDateString();
+document.getElementById("dailyPhrase").textContent =
+  phrases[new Date().getDay()];
 
-function showToast(message){
-    document.getElementById("toastMessage").innerText = message;
-    new bootstrap.Toast(document.getElementById('liveToast')).show();
+/* ===== LOCAL STORAGE ===== */
+let clicks = Number(localStorage.getItem("clicks")) || 0;
+let streak = Number(localStorage.getItem("streak")) || 0;
+let bestStreak = Number(localStorage.getItem("bestStreak")) || 0;
+let lastWin = localStorage.getItem("lastWin");
+
+/* ===== ATUALIZA UI ===== */
+const clickInfo = document.getElementById("clickInfo");
+const streakEl = document.getElementById("streak");
+const bestStreakEl = document.getElementById("bestStreak");
+
+function updateUI() {
+  clickInfo.textContent = `Cliques: ${clicks}`;
+  streakEl.textContent = streak;
+  bestStreakEl.textContent = bestStreak;
 }
+updateUI();
 
-function countClick(){
-    clickCounter++;
-    document.getElementById("clickCount").innerText = clickCounter;
+/* ===== CONTADOR DE CLIQUES ===== */
+document.getElementById("clickBtn").onclick = () => {
+  clicks++;
+  localStorage.setItem("clicks", clicks);
+  updateUI();
 
-    if(clickCounter === 10) showToast("🔥 10 cliques!");
-    if(clickCounter === 50) showToast("🚀 50 cliques!");
-    if(clickCounter === 100) showToast("🏆 100 cliques!");
-}
+  if ([10,50,100].includes(clicks))
+    clickInfo.textContent = `🏆 Conquista: ${clicks} cliques`;
+};
 
-function startCountdown(){
-    let input = document.getElementById("hour").value.trim();
-    let regex = /^(\d{1,2}):(\d{2})(?::(\d{2}))?\s*(AM|PM)$/i;
-    let match = input.match(regex);
+/* ===== CONTADOR DE HORÁRIO ===== */
+let timer = null;
 
-    if(!match){
-        showToast("Formato inválido. Use 08:30:00 PM");
-        return;
+document.getElementById("startCountdown").onclick = () => {
+  if (timer) clearInterval(timer);
+
+  const input = document.getElementById("hourInput").value.trim();
+  const match = input.match(/^(\d{1,2}):(\d{2})(?::(\d{2}))?\s*(AM|PM)$/i);
+  if (!match) return alert("Formato inválido.");
+
+  let [ , h, m, s, p ] = match;
+  h = +h; m = +m; s = s ? +s : 0;
+  if (p.toUpperCase()==="PM" && h!==12) h+=12;
+  if (p.toUpperCase()==="AM" && h===12) h=0;
+
+  const now = new Date();
+  let target = new Date(now.getFullYear(), now.getMonth(), now.getDate(), h, m, s);
+  if (target <= now) target.setDate(target.getDate()+1);
+
+  timer = setInterval(() => {
+    const diff = target - new Date();
+    if (diff <= 0) {
+      clearInterval(timer);
+      document.getElementById("countdown").textContent = "Dia vencido.";
+      document.getElementById("myAudio").play();
+
+      if (lastWin !== todayKey) {
+        streak++;
+        bestStreak = Math.max(bestStreak, streak);
+        lastWin = todayKey;
+        localStorage.setItem("streak", streak);
+        localStorage.setItem("bestStreak", bestStreak);
+        localStorage.setItem("lastWin", lastWin);
+        updateUI();
+      }
+      return;
     }
 
-    let h = parseInt(match[1]);
-    let m = parseInt(match[2]);
-    let s = match[3] ? parseInt(match[3]) : 0;
-    let p = match[4].toUpperCase();
+    document.getElementById("countdown").textContent =
+      new Date(diff).toISOString().substr(11,8);
+  },1000);
+};
 
-    if(p === "PM" && h !== 12) h += 12;
-    if(p === "AM" && h === 12) h = 0;
+/* ===== CONTADOR DE DIAS ===== */
+document.getElementById("calcDays").onclick = () => {
+  const d = new Date(document.getElementById("targetDate").value);
+  if (isNaN(d)) return;
+  const diff = Math.ceil((d - new Date()) / 86400000);
+  document.getElementById("daysResult").textContent =
+    diff >= 0 ? `Faltam ${diff} dias.` : "Essa data já passou.";
+};
 
-    let now = new Date();
-    let target = new Date(now.getFullYear(),now.getMonth(),now.getDate(),h,m,s);
-
-    if(target <= now) target.setDate(target.getDate()+1);
-
-    let interval = setInterval(()=>{
-        let diff = target - new Date();
-
-        if(diff <= 0){
-            clearInterval(interval);
-            document.getElementById("countdown").innerText = "🔥 Missão Cumprida";
-            return;
-        }
-
-        let hr = Math.floor(diff/(1000*60*60));
-        let min = Math.floor((diff%(1000*60*60))/(1000*60));
-        let sec = Math.floor((diff%(1000*60))/1000);
-
-        document.getElementById("countdown").innerText =
-            String(hr).padStart(2,'0') + ":" +
-            String(min).padStart(2,'0') + ":" +
-            String(sec).padStart(2,'0');
-
-    },1000);
-}
-
-function calculateDays(){
-    let input = document.getElementById("targetDate").value;
-    let target = new Date(input);
-
-    if(isNaN(target)){
-        showToast("Data inválida.");
-        return;
-    }
-
-    let diff = target - new Date();
-    let days = Math.floor(diff/(1000*60*60*24));
-
-    document.getElementById("daysCounter").innerText =
-        "Faltam " + days + " dias.";
-}
-
+/* ===== MODO FOCO ===== */
+document.getElementById("focusBtn").onclick = () => {
+  document.body.classList.toggle("focus");
+};
 </script>
 
 </body>
