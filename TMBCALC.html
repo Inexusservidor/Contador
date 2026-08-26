@@ -1,475 +1,1428 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ferramentas Úteis</title>
-  <style>
-    /* Estilos gerais */
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      background: #f2f2f2;
-    }
-    .tabs {
-      overflow: hidden;
-      background-color: #333;
-    }
-    .tabs button {
-      background-color: inherit;
-      float: left;
-      border: none;
-      outline: none;
-      cursor: pointer;
-      padding: 14px 16px;
-      color: #f2f2f2;
-      transition: 0.3s;
-      font-size: 17px;
-    }
-    .tabs button:hover {
-      background-color: #575757;
-    }
-    .tabs button.active {
-      background-color: #04AA6D;
-    }
-    .tabcontent {
-      display: none;
-      padding: 20px;
-      animation: fadeEffect 0.5s;
-      background-color: #fff;
-      min-height: 400px;
-    }
-    @keyframes fadeEffect {
-      from {opacity: 0;}
-      to {opacity: 1;}
-    }
-    /* Estilos para cada ferramenta */
-    .ferramenta-container {
-      max-width: 600px;
-      margin: auto;
-      padding: 15px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      background: #fafafa;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-    label {
-      display: block;
-      margin: 10px 0 5px;
-    }
-    input[type="date"],
-    input[type="text"],
-    input[type="number"],
-    textarea {
-      width: 100%;
-      padding: 8px;
-      margin-bottom: 10px;
-      border: 1px solid #ccc;
-      border-radius: 3px;
-    }
-    button {
-      padding: 10px 15px;
-      border: none;
-      border-radius: 3px;
-      background-color: #04AA6D;
-      color: white;
-      cursor: pointer;
-      margin: 5px 0;
-    }
-    button:hover {
-      background-color: #039f64;
-    }
-    /* Lista de Tarefas */
-    #listaTarefas {
-      list-style: none;
-      padding: 0;
-    }
-    #listaTarefas li {
-      padding: 8px;
-      background: #e9e9e9;
-      margin-bottom: 5px;
-      border-radius: 3px;
-      cursor: pointer;
-    }
-    #listaTarefas li.completada {
-      text-decoration: line-through;
-      color: #777;
-      background: #cfcfcf;
-    }
-    /* Exibição de resultados */
-    .resultado {
-      margin-top: 15px;
-      font-size: 18px;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b0d10">
+<title>Ferramentas</title>
+<style>
+  :root{
+    --bg:#0b0d10;
+    --bg-elev1:#14171c;
+    --bg-elev2:#1b1f25;
+    --bg-elev3:#242931;
+    --border:#262c34;
+    --sep2:rgba(255,255,255,.07);
+    --text-1:#f0f2f5;
+    --text-2:#98a1ab;
+    --text-3:#5c6570;
+    --accent:#ffb454;
+    --accent-ink:#1a1300;
+    --positive:#52d9c4;
+    --danger:#ff5f56;
+    --mono:ui-monospace,"SFMono-Regular","JetBrains Mono",Menlo,Consolas,monospace;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  }
+  *{ box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  html,body{ height:100%; }
+  body{ margin:0; background:var(--bg); color:var(--text-1); font-family:var(--sans); -webkit-font-smoothing:antialiased; overscroll-behavior:none; }
+  button,input,textarea,select{ font-family:inherit; color:inherit; }
+  button{ background:none; border:none; cursor:pointer; }
+  :focus-visible{ outline:2px solid var(--accent); outline-offset:2px; border-radius:6px; }
+  a{ color:var(--accent); }
+
+  .stage{ min-height:100dvh; display:flex; justify-content:center; background:var(--bg); }
+  .app{ position:relative; width:100%; max-width:480px; min-height:100dvh; background:var(--bg); display:flex; flex-direction:column; }
+  @media (min-width:481px){ .app{ box-shadow:0 0 70px rgba(0,0,0,.5), 0 0 0 1px var(--border); } }
+
+  .topbar{ position:sticky; top:0; z-index:5; background:rgba(11,13,16,.92); -webkit-backdrop-filter:blur(10px); backdrop-filter:blur(10px);
+    padding:calc(env(safe-area-inset-top,0px) + 14px) 16px 10px; display:flex; align-items:center; gap:8px; border-bottom:1px solid var(--border); }
+  .back-btn{ color:var(--accent); font-size:15px; font-weight:600; padding:6px 2px; flex-shrink:0; }
+  .back-btn:active{ opacity:.5; }
+  .page-title{ font-size:19px; font-weight:700; margin:0; flex:1; }
+
+  .search-wrap{ padding:12px 16px 4px; }
+  .search-wrap input{ width:100%; background:var(--bg-elev1); border:1px solid var(--border); border-radius:12px; padding:10px 14px; font-size:14.5px; outline:none; }
+  .search-wrap input::placeholder{ color:var(--text-3); }
+  .search-wrap input:focus{ border-color:var(--accent); }
+
+  .content{ flex:1; padding:8px 16px calc(50px + env(safe-area-inset-bottom,0px)); }
+
+  .home-section{ margin-bottom:6px; }
+  .section-label{ font-size:12.5px; text-transform:uppercase; letter-spacing:.07em; color:var(--text-2); font-weight:700; margin:16px 2px 10px; }
+  .card-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:10px; }
+  .tool-card{ background:var(--bg-elev1); border:1px solid var(--border); border-radius:16px; padding:14px; display:flex; flex-direction:column; align-items:flex-start; gap:8px; text-align:left; }
+  .tool-card:active{ background:var(--bg-elev2); }
+  .tool-icon{ width:34px; height:34px; border-radius:10px; background:var(--bg-elev2); display:flex; align-items:center; justify-content:center; color:var(--accent); flex-shrink:0; }
+  .tool-icon svg{ width:19px; height:19px; }
+  .tool-name{ font-size:14.5px; font-weight:600; color:var(--text-1); }
+  .tool-hint{ font-size:11.5px; color:var(--text-3); line-height:1.35; }
+
+  svg{ stroke:currentColor; fill:none; stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round; }
+
+  .card{ background:var(--bg-elev1); border:1px solid var(--border); border-radius:16px; padding:16px; margin-bottom:14px; }
+  .card-title{ font-size:12.5px; text-transform:uppercase; letter-spacing:.06em; color:var(--text-2); font-weight:700; margin:0 0 12px; }
+  .card-sub{ font-size:13px; color:var(--text-3); margin:-6px 0 14px; line-height:1.4; }
+
+  .field{ margin-bottom:12px; }
+  .field:last-child{ margin-bottom:0; }
+  .field label{ display:block; font-size:13px; color:var(--text-2); margin-bottom:6px; }
+  .field input[type=text],.field input[type=number],.field input[type=date],.field input[type=time],
+  .field select,.field textarea{
+    width:100%; background:var(--bg-elev2); border:1px solid var(--border); border-radius:10px; padding:11px 12px; font-size:15px; outline:none;
+  }
+  .field textarea{ resize:vertical; min-height:70px; line-height:1.45; font-family:inherit; }
+  .field input:focus,.field select:focus,.field textarea:focus{ border-color:var(--accent); }
+  .field-row2{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+
+  .btn{ background:var(--accent); color:var(--accent-ink); font-weight:700; font-size:14.5px; padding:12px 18px; border-radius:12px; }
+  .btn:active{ transform:scale(.97); }
+  .btn.secondary{ background:var(--bg-elev2); color:var(--text-1); border:1px solid var(--border); }
+  .btn.danger{ background:transparent; color:var(--danger); border:1px solid rgba(255,95,86,.4); }
+  .btn.block{ width:100%; text-align:center; }
+  .btn-row{ display:flex; gap:10px; flex-wrap:wrap; }
+  .btn:disabled{ opacity:.4; pointer-events:none; }
+
+  .readout{ font-family:var(--mono); font-weight:600; letter-spacing:.3px; }
+  .readout-lg{ font-size:44px; }
+  .readout-md{ font-size:26px; }
+
+  .result-row{ display:flex; justify-content:space-between; align-items:baseline; padding:9px 0; border-bottom:.5px solid var(--sep2); gap:10px; }
+  .result-row:last-child{ border-bottom:none; }
+  .result-label{ font-size:13.5px; color:var(--text-2); }
+  .result-value{ font-family:var(--mono); font-size:16px; font-weight:600; text-align:right; }
+
+  .badge{ display:inline-block; padding:4px 10px; border-radius:20px; font-size:12px; font-weight:700; }
+  .badge.ok{ background:rgba(82,217,196,.15); color:var(--positive); }
+  .badge.warn{ background:rgba(255,180,84,.15); color:var(--accent); }
+  .badge.bad{ background:rgba(255,95,86,.15); color:var(--danger); }
+
+  .hint{ font-size:12px; color:var(--text-3); margin-top:8px; line-height:1.4; }
+  .hidden{ display:none !important; }
+
+  /* calculator */
+  .calc-display{ background:var(--bg-elev1); border:1px solid var(--border); border-radius:16px; padding:20px 18px; margin-bottom:12px; text-align:right; }
+  .calc-expr{ font-size:14px; color:var(--text-3); min-height:18px; font-family:var(--mono); }
+  .calc-current{ font-size:36px; font-weight:600; font-family:var(--mono); word-break:break-all; }
+  .calc-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:10px; }
+  .calc-btn{ background:var(--bg-elev1); border:1px solid var(--border); border-radius:14px; font-size:19px; font-weight:600; padding:16px 0; }
+  .calc-btn:active{ background:var(--bg-elev2); }
+  .calc-btn.op{ color:var(--accent); }
+  .calc-btn.equals{ background:var(--accent); color:var(--accent-ink); border-color:var(--accent); }
+  .calc-btn.span2{ grid-column:span 2; }
+
+  /* world map */
+  .map-wrap{ background:var(--bg-elev1); border:1px solid var(--border); border-radius:16px; padding:10px; margin-bottom:14px; overflow:hidden; }
+  .map-svg{ width:100%; height:auto; display:block; }
+  .map-continent{ fill:var(--bg-elev3); stroke:var(--border); stroke-width:1.2; }
+  .map-grid-line{ stroke:var(--border); stroke-width:.6; opacity:.55; }
+  .city-marker{ fill:var(--text-3); stroke:var(--bg-elev1); stroke-width:1.6; cursor:pointer; }
+  .city-marker.day{ fill:var(--accent); }
+  .city-cards{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  .city-card{ background:var(--bg-elev1); border:1px solid var(--border); border-radius:14px; padding:11px 12px; cursor:default; transition:border-color .2s; }
+  .city-card.highlight{ border-color:var(--accent); }
+  .city-name{ font-size:13.5px; font-weight:600; }
+  .city-country{ font-size:11px; color:var(--text-3); margin-bottom:6px; }
+  .city-time{ font-family:var(--mono); font-size:18px; font-weight:600; }
+  .city-date{ font-size:10.5px; color:var(--text-2); margin-top:1px; }
+
+  /* tasks */
+  .task-input-row{ display:flex; gap:8px; margin-bottom:14px; }
+  .task-input-row input{ flex:1; background:var(--bg-elev2); border:1px solid var(--border); border-radius:10px; padding:11px 12px; font-size:15px; outline:none; }
+  .task-input-row input:focus{ border-color:var(--accent); }
+  .task-row{ display:flex; align-items:center; gap:10px; padding:10px 0; border-bottom:.5px solid var(--sep2); }
+  .task-row:last-child{ border-bottom:none; }
+  .task-check{ width:20px; height:20px; border-radius:50%; border:2px solid var(--accent); flex-shrink:0; position:relative; background:transparent; }
+  .task-check.done{ background:var(--accent); }
+  .task-check.done::after{ content:""; position:absolute; left:3px; top:-1px; width:5px; height:9px; border:solid var(--accent-ink); border-width:0 2px 2px 0; transform:rotate(45deg); }
+  .task-text{ flex:1; font-size:14.5px; word-break:break-word; }
+  .task-row.done .task-text{ text-decoration:line-through; color:var(--text-3); }
+  .task-del{ color:var(--text-3); padding:4px; flex-shrink:0; }
+  .task-del:active{ color:var(--danger); }
+  .task-del svg{ width:14px; height:14px; display:block; }
+  .task-empty{ text-align:center; color:var(--text-3); font-size:13.5px; padding:20px 0; }
+
+  /* password */
+  .slider{ width:100%; accent-color:var(--accent); }
+  .check-row{ display:flex; flex-wrap:wrap; gap:14px; margin:12px 0; }
+  .check-row label{ display:flex; align-items:center; gap:6px; font-size:13.5px; color:var(--text-2); }
+  .strength-bar-track{ height:6px; border-radius:3px; background:var(--bg-elev2); overflow:hidden; margin-top:10px; }
+  .strength-bar-fill{ height:100%; border-radius:3px; transition:width .3s,background .3s; }
+  .pw-output{ display:flex; align-items:center; gap:8px; background:var(--bg-elev2); border-radius:10px; padding:11px 12px; margin-top:12px; }
+  .pw-output span{ flex:1; font-family:var(--mono); font-size:15px; word-break:break-all; }
+
+  /* copy rows */
+  .copy-row{ display:flex; align-items:center; gap:8px; background:var(--bg-elev2); border-radius:10px; padding:9px 10px; margin-bottom:8px; }
+  .copy-row:last-child{ margin-bottom:0; }
+  .copy-row .copy-val{ flex:1; font-family:var(--mono); font-size:12px; word-break:break-all; color:var(--text-1); }
+  .copy-btn{ flex-shrink:0; color:var(--accent); font-size:12.5px; font-weight:700; }
+  .copy-btn:active{ opacity:.5; }
+
+  /* colors */
+  .color-preview{ width:100%; height:88px; border-radius:14px; border:1px solid var(--border); margin-bottom:14px; }
+  .palette-row{ display:flex; gap:8px; margin-top:10px; }
+  .palette-swatch{ flex:1; height:50px; border-radius:10px; cursor:pointer; position:relative; border:1px solid rgba(255,255,255,.08); }
+  .palette-swatch span{ position:absolute; bottom:3px; left:0; right:0; text-align:center; font-size:8.5px; font-family:var(--mono); color:rgba(0,0,0,.55); }
+
+  /* text counter */
+  .stat-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
+  .stat-box{ background:var(--bg-elev2); border-radius:12px; padding:10px 6px; text-align:center; }
+  .stat-num{ font-family:var(--mono); font-size:19px; font-weight:700; }
+  .stat-label{ font-size:9.5px; color:var(--text-3); margin-top:2px; text-transform:uppercase; letter-spacing:.03em; }
+
+  /* base converter */
+  .base-row{ margin-bottom:12px; }
+  .base-row label{ display:flex; justify-content:space-between; font-size:12.5px; color:var(--text-2); margin-bottom:6px; }
+  .base-row input{ width:100%; background:var(--bg-elev2); border:1px solid var(--border); border-radius:10px; padding:11px 12px; font-family:var(--mono); font-size:15px; outline:none; }
+  .base-row input:focus{ border-color:var(--accent); }
+  .base-row input.invalid{ border-color:var(--danger); }
+
+  .save-indicator{ font-size:11.5px; color:var(--positive); opacity:0; transition:opacity .3s; text-align:right; margin-top:6px; }
+  .save-indicator.show{ opacity:1; }
+
+  .overlay-layer{ position:fixed; inset:0; display:flex; justify-content:center; pointer-events:none; z-index:60; }
+  .overlay-inner{ position:relative; width:100%; max-width:480px; height:100%; }
+  .toast{ position:absolute; left:50%; bottom:28px; transform:translate(-50%,10px); background:var(--bg-elev3); color:var(--text-1);
+    font-size:13.5px; padding:10px 16px; border-radius:12px; opacity:0; pointer-events:none; transition:all .25s; max-width:80%; text-align:center; border:1px solid var(--border); }
+  .toast.show{ opacity:1; transform:translate(-50%,0); }
+</style>
 </head>
 <body>
-  <!-- Barra de Navegação (Tabs) -->
-  <div class="tabs">
-    <button class="tablinks" onclick="openTool(event, 'Dias')" id="defaultTab">Contador de Dias</button>
-    <button class="tablinks" onclick="openTool(event, 'Relogio')">Relógio</button>
-    <button class="tablinks" onclick="openTool(event, 'Calculadora')">Calculadora</button>
-    <button class="tablinks" onclick="openTool(event, 'BlocoNotas')">Bloco de Notas</button>
-    <button class="tablinks" onclick="openTool(event, 'Cronometro')">Cronômetro</button>
-    <button class="tablinks" onclick="openTool(event, 'Temporizador')">Temporizador</button>
-    <button class="tablinks" onclick="openTool(event, 'ConversorTemperatura')">Conversor de Temperatura</button>
-    <button class="tablinks" onclick="openTool(event, 'GeradorSenha')">Gerador de Senha</button>
-    <button class="tablinks" onclick="openTool(event, 'ConversorUnidades')">Conversor de Unidades</button>
-    <button class="tablinks" onclick="openTool(event, 'ListaTarefas')">Lista de Tarefas</button>
-  </div>
 
-  <!-- Tool 1: Contador de Dias -->
-  <div id="Dias" class="tabcontent">
-    <div class="ferramenta-container">
-      <h2>Contador de Dias</h2>
-      <label for="dataInicial">Data Inicial:</label>
-      <input type="date" id="dataInicial">
-      <label for="dataFinal">Data Final:</label>
-      <input type="date" id="dataFinal">
-      <button onclick="calcularDias()">Calcular</button>
-      <div class="resultado">
-        <p id="diasPassados"></p>
-        <p id="diasRestantes"></p>
-        <p id="tempoRestante"></p>
+<div class="stage">
+  <div class="app">
+
+    <div class="topbar">
+      <button class="back-btn hidden" id="backBtn">‹ Ferramentas</button>
+      <h1 class="page-title" id="pageTitle">Ferramentas</h1>
+    </div>
+
+    <div class="search-wrap" id="searchWrap">
+      <input type="search" id="searchInput" placeholder="Buscar ferramenta...">
+    </div>
+
+    <div class="content">
+
+      <div id="homeView">
+        <div id="homeSections"></div>
+      </div>
+
+      <div id="toolViews">
+
+        <!-- Relógio Mundial -->
+        <section class="tool-view hidden" data-tool="mundo">
+          <div class="map-wrap">
+            <svg class="map-svg" id="worldMap" viewBox="0 0 1000 500" xmlns="http://www.w3.org/2000/svg"></svg>
+          </div>
+          <div class="city-cards" id="cityCards"></div>
+        </section>
+
+        <!-- Relógio -->
+        <section class="tool-view hidden" data-tool="relogio">
+          <div class="card" style="text-align:center;">
+            <div class="readout readout-lg" id="clockTime">--:--:--</div>
+            <div class="hint" id="clockDate" style="margin-top:6px;font-size:14px;color:var(--text-2);"></div>
+            <div class="btn-row" style="justify-content:center;margin-top:16px;">
+              <button class="btn secondary" id="clockFormatBtn">Formato 24h</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Contador de Dias -->
+        <section class="tool-view hidden" data-tool="dias">
+          <div class="card">
+            <div class="card-title">Período</div>
+            <div class="field">
+              <label for="diasInicial">Data inicial</label>
+              <input type="date" id="diasInicial">
+            </div>
+            <div class="field">
+              <label for="diasFinal">Data final</label>
+              <input type="date" id="diasFinal">
+            </div>
+            <button class="btn block" id="diasCalcularBtn">Calcular</button>
+          </div>
+          <div class="card hidden" id="diasResultCard">
+            <div class="card-title">Resultado</div>
+            <div class="result-row"><span class="result-label">Dias entre as datas</span><span class="result-value" id="diasTotal">—</span></div>
+            <div class="result-row"><span class="result-label">Dias corridos até hoje</span><span class="result-value" id="diasPassados">—</span></div>
+            <div class="result-row"><span class="result-label">Faltam</span><span class="result-value" id="diasRestantes">—</span></div>
+          </div>
+        </section>
+
+        <!-- Cronômetro -->
+        <section class="tool-view hidden" data-tool="cronometro">
+          <div class="card" style="text-align:center;">
+            <div class="readout readout-lg" id="cronoDisplay">00:00.00</div>
+            <div class="btn-row" style="justify-content:center;margin-top:16px;">
+              <button class="btn" id="cronoStartBtn">Iniciar</button>
+              <button class="btn secondary" id="cronoLapBtn">Marcar volta</button>
+              <button class="btn danger" id="cronoResetBtn">Zerar</button>
+            </div>
+          </div>
+          <div class="card hidden" id="cronoLapsCard">
+            <div class="card-title">Voltas</div>
+            <div id="cronoLapsList"></div>
+          </div>
+        </section>
+
+        <!-- Temporizador -->
+        <section class="tool-view hidden" data-tool="temporizador">
+          <div class="card">
+            <div class="card-title">Definir tempo</div>
+            <div class="field-row2">
+              <div class="field"><label for="temMin">Minutos</label><input type="number" id="temMin" min="0" placeholder="0"></div>
+              <div class="field"><label for="temSeg">Segundos</label><input type="number" id="temSeg" min="0" max="59" placeholder="0"></div>
+            </div>
+            <div class="btn-row">
+              <button class="btn secondary" data-preset="60">1 min</button>
+              <button class="btn secondary" data-preset="300">5 min</button>
+              <button class="btn secondary" data-preset="600">10 min</button>
+              <button class="btn secondary" data-preset="1800">30 min</button>
+            </div>
+          </div>
+          <div class="card" style="text-align:center;">
+            <div class="readout readout-lg" id="temDisplay">00:00</div>
+            <div class="hint" id="temStatus" style="margin-top:8px;"></div>
+            <div class="btn-row" style="justify-content:center;margin-top:16px;">
+              <button class="btn" id="temStartBtn">Iniciar</button>
+              <button class="btn secondary" id="temPauseBtn">Pausar</button>
+              <button class="btn danger" id="temResetBtn">Zerar</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- TMB & IMC -->
+        <section class="tool-view hidden" data-tool="tmb">
+          <div class="card">
+            <div class="card-title">Seus dados</div>
+            <div class="field-row2">
+              <div class="field"><label for="tmbPeso">Peso (kg)</label><input type="number" id="tmbPeso" placeholder="Ex.: 75"></div>
+              <div class="field"><label for="tmbAltura">Altura (cm)</label><input type="number" id="tmbAltura" placeholder="Ex.: 175"></div>
+            </div>
+            <div class="field-row2">
+              <div class="field"><label for="tmbIdade">Idade (anos)</label><input type="number" id="tmbIdade" placeholder="Ex.: 28"></div>
+              <div class="field">
+                <label for="tmbSexo">Sexo biológico</label>
+                <select id="tmbSexo"><option value="m">Masculino</option><option value="f">Feminino</option></select>
+              </div>
+            </div>
+            <div class="field">
+              <label for="tmbAtividade">Nível de atividade</label>
+              <select id="tmbAtividade">
+                <option value="1.2">Sedentário (pouco ou nenhum exercício)</option>
+                <option value="1.375">Leve (exercício leve 1–3x/semana)</option>
+                <option value="1.55" selected>Moderado (exercício moderado 3–5x/semana)</option>
+                <option value="1.725">Intenso (exercício pesado 6–7x/semana)</option>
+                <option value="1.9">Atleta (exercício muito pesado, trabalho físico)</option>
+              </select>
+            </div>
+            <button class="btn block" id="tmbCalcularBtn">Calcular</button>
+          </div>
+          <div class="card hidden" id="tmbResultCard">
+            <div class="card-title">Resultado</div>
+            <div class="result-row"><span class="result-label">IMC</span><span class="result-value" id="tmbImcValor">—</span></div>
+            <div class="result-row"><span class="result-label">Classificação</span><span id="tmbImcBadge">—</span></div>
+            <div class="result-row"><span class="result-label">Taxa Metabólica Basal</span><span class="result-value" id="tmbTmbValor">—</span></div>
+            <div class="result-row"><span class="result-label">Manutenção (kcal/dia)</span><span class="result-value" id="tmbManutencao">—</span></div>
+            <div class="result-row"><span class="result-label">Emagrecimento (kcal/dia)</span><span class="result-value" id="tmbDeficit">—</span></div>
+            <div class="result-row"><span class="result-label">Ganho de massa (kcal/dia)</span><span class="result-value" id="tmbSuperavit">—</span></div>
+          </div>
+          <p class="hint">Estimativas baseadas na fórmula de Mifflin-St Jeor. Não substitui orientação de um profissional de saúde.</p>
+        </section>
+
+        <!-- Calculadora -->
+        <section class="tool-view hidden" data-tool="calculadora">
+          <div class="calc-display">
+            <div class="calc-expr" id="calcExpr"></div>
+            <div class="calc-current" id="calcCurrent">0</div>
+          </div>
+          <div class="calc-grid" id="calcGrid">
+            <button class="calc-btn secondary" data-action="clear">C</button>
+            <button class="calc-btn secondary" data-action="sign">±</button>
+            <button class="calc-btn secondary" data-action="percent">%</button>
+            <button class="calc-btn op" data-op="div">÷</button>
+
+            <button class="calc-btn" data-digit="7">7</button>
+            <button class="calc-btn" data-digit="8">8</button>
+            <button class="calc-btn" data-digit="9">9</button>
+            <button class="calc-btn op" data-op="mul">×</button>
+
+            <button class="calc-btn" data-digit="4">4</button>
+            <button class="calc-btn" data-digit="5">5</button>
+            <button class="calc-btn" data-digit="6">6</button>
+            <button class="calc-btn op" data-op="sub">−</button>
+
+            <button class="calc-btn" data-digit="1">1</button>
+            <button class="calc-btn" data-digit="2">2</button>
+            <button class="calc-btn" data-digit="3">3</button>
+            <button class="calc-btn op" data-op="add">+</button>
+
+            <button class="calc-btn span2" data-digit="0">0</button>
+            <button class="calc-btn" data-digit=".">.</button>
+            <button class="calc-btn equals" data-action="equals">=</button>
+          </div>
+        </section>
+
+        <!-- Porcentagem -->
+        <section class="tool-view hidden" data-tool="porcentagem">
+          <div class="card">
+            <div class="card-title">Qual é X% de Y?</div>
+            <div class="field-row2">
+              <div class="field"><label>Porcentagem (%)</label><input type="number" id="pctA1"></div>
+              <div class="field"><label>Valor</label><input type="number" id="pctA2"></div>
+            </div>
+            <div class="result-row"><span class="result-label">Resultado</span><span class="result-value" id="pctAResult">—</span></div>
+          </div>
+          <div class="card">
+            <div class="card-title">X é que % de Y?</div>
+            <div class="field-row2">
+              <div class="field"><label>Valor (X)</label><input type="number" id="pctB1"></div>
+              <div class="field"><label>Total (Y)</label><input type="number" id="pctB2"></div>
+            </div>
+            <div class="result-row"><span class="result-label">Resultado</span><span class="result-value" id="pctBResult">—</span></div>
+          </div>
+          <div class="card">
+            <div class="card-title">Aumentar ou diminuir em %</div>
+            <div class="field-row2">
+              <div class="field"><label>Valor</label><input type="number" id="pctC1"></div>
+              <div class="field"><label>Porcentagem (%)</label><input type="number" id="pctC2"></div>
+            </div>
+            <div class="field">
+              <select id="pctCTipo"><option value="up">Aumentar</option><option value="down">Diminuir</option></select>
+            </div>
+            <div class="result-row"><span class="result-label">Resultado</span><span class="result-value" id="pctCResult">—</span></div>
+          </div>
+        </section>
+
+        <!-- Conversor de Unidades -->
+        <section class="tool-view hidden" data-tool="unidades">
+          <div class="card">
+            <div class="field">
+              <label for="unitCategoria">Categoria</label>
+              <select id="unitCategoria">
+                <option value="comprimento">Comprimento</option>
+                <option value="peso">Peso</option>
+                <option value="volume">Volume</option>
+                <option value="velocidade">Velocidade</option>
+                <option value="area">Área</option>
+                <option value="temperatura">Temperatura</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="unitValor">Valor</label>
+              <input type="number" id="unitValor" placeholder="0">
+            </div>
+            <div class="field-row2">
+              <div class="field"><label for="unitDe">De</label><select id="unitDe"></select></div>
+              <div class="field"><label for="unitPara">Para</label><select id="unitPara"></select></div>
+            </div>
+            <div class="result-row"><span class="result-label">Resultado</span><span class="result-value" id="unitResultado">—</span></div>
+          </div>
+        </section>
+
+        <!-- Gerador de Senha -->
+        <section class="tool-view hidden" data-tool="senha">
+          <div class="card">
+            <div class="card-title">Comprimento: <span id="senhaLenLabel">16</span></div>
+            <input type="range" class="slider" id="senhaLen" min="4" max="64" value="16">
+            <div class="check-row">
+              <label><input type="checkbox" id="senhaMai" checked> Maiúsculas</label>
+              <label><input type="checkbox" id="senhaMin" checked> Minúsculas</label>
+              <label><input type="checkbox" id="senhaNum" checked> Números</label>
+              <label><input type="checkbox" id="senhaSim" checked> Símbolos</label>
+            </div>
+            <button class="btn block" id="senhaGerarBtn">Gerar senha</button>
+            <div class="pw-output">
+              <span id="senhaOutput">—</span>
+              <button class="copy-btn" id="senhaCopyBtn">Copiar</button>
+            </div>
+            <div class="strength-bar-track"><div class="strength-bar-fill" id="senhaStrengthBar" style="width:0%;"></div></div>
+            <div class="hint" id="senhaStrengthLabel"></div>
+          </div>
+        </section>
+
+        <!-- Hash & Base64 -->
+        <section class="tool-view hidden" data-tool="hash">
+          <div class="card">
+            <div class="card-title">Texto de entrada</div>
+            <div class="field"><textarea id="hashInput" rows="3" placeholder="Digite o texto..."></textarea></div>
+            <div class="btn-row">
+              <button class="btn secondary" data-hash="SHA-1">SHA-1</button>
+              <button class="btn secondary" data-hash="SHA-256">SHA-256</button>
+              <button class="btn secondary" data-hash="SHA-384">SHA-384</button>
+              <button class="btn secondary" data-hash="SHA-512">SHA-512</button>
+            </div>
+            <div id="hashResults" style="margin-top:12px;"></div>
+          </div>
+          <div class="card">
+            <div class="card-title">Base64</div>
+            <div class="field"><textarea id="b64Input" rows="3" placeholder="Digite o texto..."></textarea></div>
+            <div class="btn-row">
+              <button class="btn secondary" id="b64EncodeBtn">Codificar</button>
+              <button class="btn secondary" id="b64DecodeBtn">Decodificar</button>
+            </div>
+            <div class="copy-row hidden" id="b64ResultRow">
+              <span class="copy-val" id="b64Result"></span>
+              <button class="copy-btn" id="b64CopyBtn">Copiar</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Bloco de Notas -->
+        <section class="tool-view hidden" data-tool="notas">
+          <div class="card">
+            <div class="field"><textarea id="notasArea" rows="14" placeholder="Digite suas anotações aqui..."></textarea></div>
+            <div class="save-indicator" id="notasSaveIndicator">Salvo</div>
+            <div class="btn-row" style="margin-top:10px;">
+              <button class="btn danger" id="notasLimparBtn">Limpar</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Lista de Tarefas -->
+        <section class="tool-view hidden" data-tool="tarefas">
+          <div class="card">
+            <div class="task-input-row">
+              <input type="text" id="tarefaInput" placeholder="Nova tarefa...">
+              <button class="btn" id="tarefaAddBtn">Adicionar</button>
+            </div>
+            <div id="tarefasList"></div>
+            <div class="btn-row" style="margin-top:10px;">
+              <button class="btn secondary" id="tarefasLimparBtn">Limpar concluídas</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Contador de Texto -->
+        <section class="tool-view hidden" data-tool="texto">
+          <div class="card">
+            <div class="field"><textarea id="textoArea" rows="10" placeholder="Cole ou digite seu texto aqui..."></textarea></div>
+          </div>
+          <div class="card">
+            <div class="stat-grid">
+              <div class="stat-box"><div class="stat-num" id="textoChars">0</div><div class="stat-label">Caracteres</div></div>
+              <div class="stat-box"><div class="stat-num" id="textoCharsNoSpace">0</div><div class="stat-label">Sem espaços</div></div>
+              <div class="stat-box"><div class="stat-num" id="textoWords">0</div><div class="stat-label">Palavras</div></div>
+              <div class="stat-box"><div class="stat-num" id="textoSentences">0</div><div class="stat-label">Frases</div></div>
+              <div class="stat-box"><div class="stat-num" id="textoParagraphs">0</div><div class="stat-label">Parágrafos</div></div>
+              <div class="stat-box"><div class="stat-num" id="textoReading">0 min</div><div class="stat-label">Leitura</div></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Seletor de Cores -->
+        <section class="tool-view hidden" data-tool="cores">
+          <div class="card">
+            <div class="color-preview" id="corPreview"></div>
+            <div class="field">
+              <input type="color" id="corInput" value="#ffb454" style="width:100%;height:44px;padding:2px;background:var(--bg-elev2);border:1px solid var(--border);border-radius:10px;">
+            </div>
+            <div class="copy-row"><span class="copy-val" id="corHex"></span><button class="copy-btn" data-copy-target="corHex">Copiar</button></div>
+            <div class="copy-row"><span class="copy-val" id="corRgb"></span><button class="copy-btn" data-copy-target="corRgb">Copiar</button></div>
+            <div class="copy-row"><span class="copy-val" id="corHsl"></span><button class="copy-btn" data-copy-target="corHsl">Copiar</button></div>
+            <div class="card-title" style="margin-top:14px;">Paleta</div>
+            <div class="palette-row" id="corPalette"></div>
+          </div>
+        </section>
+
+        <!-- Bases Numéricas -->
+        <section class="tool-view hidden" data-tool="bases">
+          <div class="card">
+            <div class="base-row">
+              <label>Decimal</label>
+              <input type="text" id="baseDec" inputmode="numeric" placeholder="0">
+            </div>
+            <div class="base-row">
+              <label>Binário</label>
+              <input type="text" id="baseBin" inputmode="numeric" placeholder="0">
+            </div>
+            <div class="base-row">
+              <label>Octal</label>
+              <input type="text" id="baseOct" inputmode="numeric" placeholder="0">
+            </div>
+            <div class="base-row">
+              <label>Hexadecimal</label>
+              <input type="text" id="baseHex" placeholder="0">
+            </div>
+          </div>
+        </section>
+
       </div>
     </div>
   </div>
+</div>
 
-  <!-- Tool 2: Relógio -->
-  <div id="Relogio" class="tabcontent">
-    <div class="ferramenta-container">
-      <h2>Relógio Atual</h2>
-      <p id="relogioAtual" style="font-size:24px;"></p>
-    </div>
+<div class="overlay-layer">
+  <div class="overlay-inner">
+    <div class="toast" id="toast"></div>
   </div>
+</div>
 
-  <!-- Tool 3: Calculadora Funcional -->
-  <div id="Calculadora" class="tabcontent">
-    <div class="ferramenta-container">
-      <h2>Calculadora</h2>
-      <input type="text" id="calcInput" placeholder="Digite a expressão (ex.: 2+3*4)">
-      <button onclick="calcularExpressao()">Calcular</button>
-      <p id="calcResultado" class="resultado"></p>
-    </div>
-  </div>
+<script>
+(function(){
+  "use strict";
 
-  <!-- Tool 4: Bloco de Notas -->
-  <div id="BlocoNotas" class="tabcontent">
-    <div class="ferramenta-container">
-      <h2>Bloco de Notas</h2>
-      <textarea id="notaArea" rows="10" placeholder="Digite suas anotações aqui..."></textarea>
-      <button onclick="salvarNota()">Salvar Nota</button>
-      <button onclick="limparNota()">Limpar Nota</button>
-    </div>
-  </div>
-
-  <!-- Tool 5: Cronômetro -->
-  <div id="Cronometro" class="tabcontent">
-    <div class="ferramenta-container">
-      <h2>Cronômetro</h2>
-      <p id="cronometroDisplay" style="font-size:24px;">00:00:00</p>
-      <button onclick="iniciarCronometro()">Iniciar</button>
-      <button onclick="pararCronometro()">Parar</button>
-      <button onclick="resetarCronometro()">Resetar</button>
-    </div>
-  </div>
-
-  <!-- Tool 6: Temporizador (Countdown Timer) -->
-  <div id="Temporizador" class="tabcontent">
-    <div class="ferramenta-container">
-      <h2>Temporizador</h2>
-      <label for="temporizadorInput">Tempo em segundos:</label>
-      <input type="number" id="temporizadorInput" placeholder="Ex.: 120">
-      <button onclick="iniciarTemporizador()">Iniciar Temporizador</button>
-      <p id="temporizadorDisplay" style="font-size:24px;" class="resultado"></p>
-    </div>
-  </div>
-
-  <!-- Tool 7: Conversor de Temperatura -->
-  <div id="ConversorTemperatura" class="tabcontent">
-    <div class="ferramenta-container">
-      <h2>Conversor de Temperatura</h2>
-      <label for="tempCelsius">Temperatura em °C:</label>
-      <input type="number" id="tempCelsius" placeholder="Ex.: 25">
-      <button onclick="converterTemperatura()">Converter</button>
-      <p id="tempResultado" class="resultado"></p>
-    </div>
-  </div>
-
-  <!-- Tool 8: Gerador de Senha -->
-  <div id="GeradorSenha" class="tabcontent">
-    <div class="ferramenta-container">
-      <h2>Gerador de Senha</h2>
-      <label for="senhaTamanho">Tamanho da Senha:</label>
-      <input type="number" id="senhaTamanho" placeholder="Ex.: 12">
-      <button onclick="gerarSenha()">Gerar Senha</button>
-      <p id="senhaGerada" class="resultado"></p>
-    </div>
-  </div>
-
-  <!-- Tool 9: Conversor de Unidades (Km para Milhas) -->
-  <div id="ConversorUnidades" class="tabcontent">
-    <div class="ferramenta-container">
-      <h2>Conversor de Unidades</h2>
-      <label for="kmInput">Quilômetros:</label>
-      <input type="number" id="kmInput" placeholder="Ex.: 10">
-      <button onclick="converterUnidades()">Converter para Milhas</button>
-      <p id="unidadesResultado" class="resultado"></p>
-    </div>
-  </div>
-<!-- Tool 10: Lista de Tarefas -->
-<div id="ListaTarefas" class="tabcontent">
-    <div class="ferramenta-container">
-      <h2>Lista de Tarefas</h2>
-      <input type="text" id="tarefaInput" placeholder="Digite uma tarefa">
-      <button onclick="adicionarTarefa()">Adicionar Tarefa</button>
-      <button onclick="limparTarefas()">Limpar Tarefas</button>
-      <ul id="listaTarefas"></ul>
-    </div>
-  </div>
-
-  <script>
-    // Função para alternar entre as abas
-    function openTool(evt, toolName) {
-      var i, tabcontent, tablinks;
-      tabcontent = document.getElementsByClassName("tabcontent");
-      for (i = 0; i < tabcontent.length; i++) {
-        tabcontent[i].style.display = "none";
+  /* ================= storage layer ================= */
+  var storageAPI = (function(){
+    if (window.storage) return window.storage;
+    return {
+      get: function(key){
+        return new Promise(function(resolve,reject){
+          var v = window.localStorage.getItem(key);
+          if (v === null) { reject(new Error("not found")); return; }
+          resolve({ key:key, value:v });
+        });
+      },
+      set: function(key,value){
+        return new Promise(function(resolve){
+          window.localStorage.setItem(key,value);
+          resolve({ key:key, value:value });
+        });
       }
-      tablinks = document.getElementsByClassName("tablinks");
-      for (i = 0; i < tablinks.length; i++) {
-        tablinks[i].className = tablinks[i].className.replace(" active", "");
-      }
-      document.getElementById(toolName).style.display = "block";
-      evt.currentTarget.className += " active";
-    }
-    // Abrir a primeira aba por padrão
-    document.getElementById("defaultTab").click();
+    };
+  })();
 
-    /* Ferramenta 1: Contador de Dias */
-    function calcularDias() {
-  // Obter os valores dos inputs
-  var dataInicialStr = document.getElementById("dataInicial").value;
-  var dataFinalStr = document.getElementById("dataFinal").value;
+  /* ================= toast / copy ================= */
+  var toastEl = document.getElementById("toast");
+  var toastTimer = null;
+  function showToast(msg){
+    toastEl.textContent = msg;
+    toastEl.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function(){ toastEl.classList.remove("show"); }, 2200);
+  }
+  function fallbackCopy(text){
+    try{
+      var ta=document.createElement("textarea"); ta.value=text; ta.style.position="fixed"; ta.style.opacity="0";
+      document.body.appendChild(ta); ta.focus(); ta.select();
+      document.execCommand("copy"); document.body.removeChild(ta);
+      showToast("Copiado!");
+    }catch(e){ showToast("Não foi possível copiar"); }
+  }
+  function copyText(text){
+    if (!text) return;
+    if (navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(function(){ showToast("Copiado!"); }).catch(function(){ fallbackCopy(text); });
+    } else { fallbackCopy(text); }
+  }
 
- 
+  function formatNum(n){
+    if (!isFinite(n)) return "—";
+    var r = Math.round(n*10000)/10000;
+    return r.toString().replace(".", ",");
+  }
+  function pad2(n){ return n<10 ? "0"+n : ""+n; }
 
-  // Converter as strings para objetos Date
-  var dataInicial = new Date(dataInicialStr);
-  var dataFinal = new Date(dataFinalStr);
-  var agora = new Date();
+  /* ================= navigation ================= */
+  var TOOLS = [
+    { id:"mundo", name:"Relógio Mundial", hint:"Horários de várias cidades", cat:"tempo" },
+    { id:"relogio", name:"Relógio", hint:"Hora e data atuais", cat:"tempo" },
+    { id:"dias", name:"Contador de Dias", hint:"Dias entre duas datas", cat:"tempo" },
+    { id:"cronometro", name:"Cronômetro", hint:"Com marcação de voltas", cat:"tempo" },
+    { id:"temporizador", name:"Temporizador", hint:"Contagem regressiva com alarme", cat:"tempo" },
+    { id:"tmb", name:"TMB & IMC", hint:"Metabolismo basal e índice de massa corporal", cat:"saude" },
+    { id:"calculadora", name:"Calculadora", hint:"Operações básicas", cat:"calculo" },
+    { id:"porcentagem", name:"Porcentagem", hint:"Cálculos rápidos de %", cat:"calculo" },
+    { id:"unidades", name:"Conversor de Unidades", hint:"Comprimento, peso, volume e mais", cat:"calculo" },
+    { id:"senha", name:"Gerador de Senha", hint:"Senhas fortes e aleatórias", cat:"seguranca" },
+    { id:"hash", name:"Hash & Base64", hint:"SHA-256/512 e codificação Base64", cat:"seguranca" },
+    { id:"notas", name:"Bloco de Notas", hint:"Anotações salvas automaticamente", cat:"produtividade" },
+    { id:"tarefas", name:"Lista de Tarefas", hint:"Organize seus afazeres", cat:"produtividade" },
+    { id:"texto", name:"Contador de Texto", hint:"Palavras, caracteres e leitura", cat:"produtividade" },
+    { id:"cores", name:"Seletor de Cores", hint:"HEX, RGB, HSL e paletas", cat:"extras" },
+    { id:"bases", name:"Bases Numéricas", hint:"Binário, octal, decimal e hex", cat:"extras" }
+  ];
+  var CATS = { tempo:"Tempo", saude:"Saúde", calculo:"Cálculos", seguranca:"Segurança", produtividade:"Produtividade", extras:"Extras" };
+  var CAT_ORDER = ["tempo","saude","calculo","seguranca","produtividade","extras"];
 
- 
+  var ICONS = {
+    mundo: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><ellipse cx="12" cy="12" rx="4" ry="9"/><path d="M3 12H21"/></svg>',
+    relogio: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7V12L15.5 14.5"/></svg>',
+    dias: '<svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10H21"/><path d="M8 3V7M16 3V7"/></svg>',
+    cronometro: '<svg viewBox="0 0 24 24"><circle cx="12" cy="13" r="8"/><path d="M12 13V9"/><path d="M9 3H15"/></svg>',
+    temporizador: '<svg viewBox="0 0 24 24"><path d="M6 3H18"/><path d="M6 21H18"/><path d="M7 3C7 8 12 10 12 12C12 10 17 8 17 3"/><path d="M7 21C7 16 12 14 12 12C12 14 17 16 17 21"/></svg>',
+    tmb: '<svg viewBox="0 0 24 24"><path d="M3 12H7L9 6L13 18L15 12H21"/></svg>',
+    calculadora: '<svg viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8H16"/><path d="M8 13H8.01M12 13H12.01M16 13H16.01M8 17H8.01M12 17H12.01M16 17H16.01"/></svg>',
+    porcentagem: '<svg viewBox="0 0 24 24"><path d="M19 5L5 19"/><circle cx="7" cy="7" r="2"/><circle cx="17" cy="17" r="2"/></svg>',
+    unidades: '<svg viewBox="0 0 24 24"><path d="M4 12H20"/><path d="M4 12L7 9M4 12L7 15"/><path d="M20 12L17 9M20 12L17 15"/></svg>',
+    senha: '<svg viewBox="0 0 24 24"><circle cx="8" cy="12" r="4"/><path d="M12 12H21"/><path d="M17 12V16"/><path d="M21 12V15"/></svg>',
+    hash: '<svg viewBox="0 0 24 24"><path d="M9 3L7 21"/><path d="M17 3L15 21"/><path d="M4 9H20"/><path d="M3 15H19"/></svg>',
+    notas: '<svg viewBox="0 0 24 24"><path d="M4 6H20"/><path d="M4 12H14"/><path d="M4 18H10"/></svg>',
+    tarefas: '<svg viewBox="0 0 24 24"><path d="M4 6L6 8L10 4"/><path d="M13 6H20"/><path d="M4 14L6 16L10 12"/><path d="M13 14H20"/></svg>',
+    texto: '<svg viewBox="0 0 24 24"><path d="M5 5H19"/><path d="M12 5V19"/></svg>',
+    cores: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="9" cy="10" r="1.3"/><circle cx="14" cy="9" r="1.3"/><circle cx="16" cy="14" r="1.3"/><circle cx="10" cy="15" r="1.3"/></svg>',
+    bases: '<svg viewBox="0 0 24 24"><rect x="4" y="4" width="4" height="4"/><rect x="4" y="10" width="4" height="4"/><rect x="10" y="7" width="4" height="10"/><rect x="16" y="4" width="4" height="13"/></svg>'
+  };
 
-  var diasPassados = Math.floor((agora - dataInicial) / (1000 * 60 * 60 * 24));
-  var diasRestantes = Math.floor((dataFinal - agora) / (1000 * 60 * 60 * 24));
-  var tempoRestante = dataFinal - agora;
-  var segundos = Math.floor(tempoRestante / 1000) % 60;
-  var minutos = Math.floor(tempoRestante / (1000 * 60)) % 60;
-  var horas = Math.floor(tempoRestante / (1000 * 60 * 60)) % 24;
+  var homeViewEl = document.getElementById("homeView");
+  var homeSectionsEl = document.getElementById("homeSections");
+  var searchWrapEl = document.getElementById("searchWrap");
+  var backBtnEl = document.getElementById("backBtn");
+  var pageTitleEl = document.getElementById("pageTitle");
+  var toolViewEls = document.querySelectorAll(".tool-view");
 
-  document.getElementById("diasPassados").innerText = "Dias passados: " + diasPassados;
-  document.getElementById("diasRestantes").innerText = "Dias restantes: " + diasRestantes;
-  document.getElementById("tempoRestante").innerText = "Tempo restante: " + horas + "h " + minutos + "m " + segundos + "s";
-}
-
-
-    /* Ferramenta 2: Relógio */
-    function atualizarRelogio(){
-      var now = new Date();
-      var diaSemana = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
-      var mes = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
-      var dataFormatada = diaSemana[now.getDay()] + ', ' + now.getDate() + ' de ' + mes[now.getMonth()] + ' de ' + now.getFullYear() + ', ' +
-                           (now.getHours()<10?'0'+now.getHours():now.getHours()) + ':' +
-                           (now.getMinutes()<10?'0'+now.getMinutes():now.getMinutes()) + ':' +
-                           (now.getSeconds()<10?'0'+now.getSeconds():now.getSeconds());
-      document.getElementById("relogioAtual").textContent = dataFormatada;
-    }
-
-    /* Ferramenta 3: Calculadora */
-    function calcularExpressao(){
-      try {
-        var expr = document.getElementById("calcInput").value;
-        var resultado = eval(expr);
-        document.getElementById("calcResultado").innerText = "Resultado: " + resultado;
-      } catch(e) {
-        document.getElementById("calcResultado").innerText = "Erro na expressão";
-      }
-    }
-
-    /* Ferramenta 4: Bloco de Notas */
-    function salvarNota(){
-      var conteudo = document.getElementById("notaArea").value;
-      localStorage.setItem("blocoNotas", conteudo);
-      alert("Nota salva com sucesso!");
-    }
-    function carregarNota(){
-      var conteudo = localStorage.getItem("blocoNotas");
-      if(conteudo){
-        document.getElementById("notaArea").value = conteudo;
-      }
-    }
-    function limparNota(){
-      document.getElementById("notaArea").value = "";
-      localStorage.removeItem("blocoNotas");
-    }
-    carregarNota();
-
-    /* Ferramenta 5: Cronômetro */
-    var cronometroInterval;
-    var tempoCronometro = 0;
-    function iniciarCronometro(){
-      clearInterval(cronometroInterval);
-      cronometroInterval = setInterval(function(){
-        tempoCronometro++;
-        var horas = Math.floor(tempoCronometro / 3600);
-        var minutos = Math.floor((tempoCronometro % 3600) / 60);
-        var segundos = tempoCronometro % 60;
-        document.getElementById("cronometroDisplay").innerText = 
-            (horas < 10 ? "0" + horas : horas) + ":" + 
-            (minutos < 10 ? "0" + minutos : minutos) + ":" + 
-            (segundos < 10 ? "0" + segundos : segundos);
-      }, 1000);
-    }
-    function pararCronometro(){
-      clearInterval(cronometroInterval);
-    }
-    function resetarCronometro(){
-      clearInterval(cronometroInterval);
-      tempoCronometro = 0;
-      document.getElementById("cronometroDisplay").innerText = "00:00:00";
-    }
-
-    /* Ferramenta 6: Temporizador */
-    var temporizadorInterval;
-    function iniciarTemporizador(){
-      var inputSegundos = parseInt(document.getElementById("temporizadorInput").value);
-      if(isNaN(inputSegundos) || inputSegundos < 0){
-        alert("Insira um valor válido em segundos.");
-        return;
-      }
-      clearInterval(temporizadorInterval);
-      var tempoRestante = inputSegundos;
-      temporizadorInterval = setInterval(function(){
-        if(tempoRestante <= 0){
-          clearInterval(temporizadorInterval);
-          document.getElementById("temporizadorDisplay").innerText = "Tempo esgotado!";
-        } else {
-          var horas = Math.floor(tempoRestante / 3600);
-          var minutos = Math.floor((tempoRestante % 3600) / 60);
-          var segundos = tempoRestante % 60;
-          document.getElementById("temporizadorDisplay").innerText = 
-              (horas < 10 ? "0" + horas : horas) + ":" +
-              (minutos < 10 ? "0" + minutos : minutos) + ":" +
-              (segundos < 10 ? "0" + segundos : segundos);
-          tempoRestante--;
-        }
-      }, 1000);
-    }
-
-    /* Ferramenta 7: Conversor de Temperatura */
-    function converterTemperatura(){
-      var celsius = parseFloat(document.getElementById("tempCelsius").value);
-      if(isNaN(celsius)){
-        alert("Insira um valor válido.");
-        return;
-      }
-      var fahrenheit = (celsius * 9/5) + 32;
-      document.getElementById("tempResultado").innerText = celsius + "°C = " + fahrenheit.toFixed(2) + "°F";
-    }
-
-    /* Ferramenta 8: Gerador de Senha */
-    function gerarSenha(){
-      var tamanho = parseInt(document.getElementById("senhaTamanho").value);
-      if(isNaN(tamanho) || tamanho <= 0){
-        alert("Insira um tamanho válido para a senha.");
-        return;
-      }
-      var caracteres = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()";
-      var senha = "";
-      for(var i = 0; i < tamanho; i++){
-        senha += caracteres.charAt(Math.floor(Math.random() * caracteres.length));
-      }
-      document.getElementById("senhaGerada").innerText = "Senha: " + senha;
-    }
-
-    /* Ferramenta 9: Conversor de Unidades (Km para Milhas) */
-    function converterUnidades(){
-      var km = parseFloat(document.getElementById("kmInput").value);
-      if(isNaN(km)){
-        alert("Insira um valor válido em quilômetros.");
-        return;
-      }
-      var milhas = km * 0.621371;
-      document.getElementById("unidadesResultado").innerText = km + " km = " + milhas.toFixed(2) + " milhas";
-    }
-
-   // Função para carregar as tarefas salvas no localStorage
-   function carregarTarefas() {
-    var tarefasSalvas = localStorage.getItem("tarefas");
-    if (tarefasSalvas) {
-      var tarefas = JSON.parse(tarefasSalvas);
-      var listaTarefas = document.getElementById("listaTarefas");
-      listaTarefas.innerHTML = "";
-      tarefas.forEach(function(tarefa) {
-        adicionarTarefaNaLista(tarefa.texto, tarefa.completada);
+  function buildHome(){
+    var byCat = {};
+    TOOLS.forEach(function(t){ (byCat[t.cat] = byCat[t.cat] || []).push(t); });
+    homeSectionsEl.innerHTML = "";
+    CAT_ORDER.forEach(function(catKey){
+      var items = byCat[catKey];
+      if (!items) return;
+      var section = document.createElement("div");
+      section.className = "home-section";
+      var h2 = document.createElement("h2");
+      h2.className = "section-label";
+      h2.textContent = CATS[catKey];
+      section.appendChild(h2);
+      var grid = document.createElement("div");
+      grid.className = "card-grid";
+      items.forEach(function(t){
+        var card = document.createElement("button");
+        card.type = "button";
+        card.className = "tool-card";
+        card.dataset.search = (t.name + " " + t.hint).toLowerCase();
+        card.innerHTML = '<span class="tool-icon">' + (ICONS[t.id] || "") + '</span><span class="tool-name">' + t.name + '</span><span class="tool-hint">' + t.hint + '</span>';
+        card.addEventListener("click", function(){ showTool(t.id); });
+        grid.appendChild(card);
       });
-    }
+      section.appendChild(grid);
+      homeSectionsEl.appendChild(section);
+    });
   }
 
-  // Função auxiliar para adicionar um item à lista e salvar
-  function adicionarTarefaNaLista(tarefaText, completada) {
-    var li = document.createElement("li");
-    li.innerText = tarefaText;
-    if (completada) {
-      li.classList.add("completada");
-    }
-    li.onclick = function(){
-      this.classList.toggle("completada");
-      salvarTarefas();
-    }
-    document.getElementById("listaTarefas").appendChild(li);
-    salvarTarefas();
+  function showHome(){
+    homeViewEl.classList.remove("hidden");
+    searchWrapEl.classList.remove("hidden");
+    backBtnEl.classList.add("hidden");
+    pageTitleEl.textContent = "Ferramentas";
+    toolViewEls.forEach(function(v){ v.classList.add("hidden"); });
+    window.scrollTo(0,0);
+  }
+  function showTool(id){
+    var tool = TOOLS.find(function(t){ return t.id === id; });
+    homeViewEl.classList.add("hidden");
+    searchWrapEl.classList.add("hidden");
+    backBtnEl.classList.remove("hidden");
+    pageTitleEl.textContent = tool ? tool.name : "";
+    toolViewEls.forEach(function(v){ v.classList.toggle("hidden", v.dataset.tool !== id); });
+    window.scrollTo(0,0);
+  }
+  backBtnEl.addEventListener("click", showHome);
+
+  document.getElementById("searchInput").addEventListener("input", function(){
+    var q = this.value.trim().toLowerCase();
+    var cards = homeSectionsEl.querySelectorAll(".tool-card");
+    cards.forEach(function(c){
+      c.classList.toggle("hidden", q.length > 0 && c.dataset.search.indexOf(q) === -1);
+    });
+    homeSectionsEl.querySelectorAll(".home-section").forEach(function(sec){
+      var visible = Array.prototype.some.call(sec.querySelectorAll(".tool-card"), function(c){ return !c.classList.contains("hidden"); });
+      sec.classList.toggle("hidden", !visible);
+    });
+  });
+
+  buildHome();
+
+  /* ================= Relógio Mundial ================= */
+  var CITIES = [
+    { name:"São Paulo", country:"Brasil", flag:"🇧🇷", tz:"America/Sao_Paulo", x:370, y:315 },
+    { name:"Nova York", country:"EUA", flag:"🇺🇸", tz:"America/New_York", x:294, y:137 },
+    { name:"Los Angeles", country:"EUA", flag:"🇺🇸", tz:"America/Los_Angeles", x:172, y:155 },
+    { name:"Cidade do México", country:"México", flag:"🇲🇽", tz:"America/Mexico_City", x:225, y:196 },
+    { name:"Buenos Aires", country:"Argentina", flag:"🇦🇷", tz:"America/Argentina/Buenos_Aires", x:338, y:346 },
+    { name:"Londres", country:"Reino Unido", flag:"🇬🇧", tz:"Europe/London", x:500, y:107 },
+    { name:"Lisboa", country:"Portugal", flag:"🇵🇹", tz:"Europe/Lisbon", x:475, y:142 },
+    { name:"Paris", country:"França", flag:"🇫🇷", tz:"Europe/Paris", x:507, y:114 },
+    { name:"Berlim", country:"Alemanha", flag:"🇩🇪", tz:"Europe/Berlin", x:537, y:104 },
+    { name:"Moscou", country:"Rússia", flag:"🇷🇺", tz:"Europe/Moscow", x:605, y:95 },
+    { name:"Joanesburgo", country:"África do Sul", flag:"🇿🇦", tz:"Africa/Johannesburg", x:578, y:323 },
+    { name:"Dubai", country:"Emirados Árabes", flag:"🇦🇪", tz:"Asia/Dubai", x:654, y:180 },
+    { name:"Nova Deli", country:"Índia", flag:"🇮🇳", tz:"Asia/Kolkata", x:714, y:171 },
+    { name:"Pequim", country:"China", flag:"🇨🇳", tz:"Asia/Shanghai", x:823, y:139 },
+    { name:"Tóquio", country:"Japão", flag:"🇯🇵", tz:"Asia/Tokyo", x:888, y:151 },
+    { name:"Sydney", country:"Austrália", flag:"🇦🇺", tz:"Australia/Sydney", x:915, y:344 }
+  ];
+
+  var CONTINENTS = [
+    "M100,40 Q220,30 280,70 Q300,110 270,150 Q250,190 230,225 Q200,235 170,210 Q140,190 130,170 Q90,150 70,110 Q55,75 100,40 Z",
+    "M270,260 Q340,255 370,290 Q390,330 380,370 Q360,410 320,428 Q290,415 280,380 Q260,340 250,300 Q250,275 270,260 Z",
+    "M480,60 Q540,55 560,85 Q565,110 540,130 Q510,145 485,125 Q465,100 480,60 Z",
+    "M500,155 Q570,150 578,190 Q582,240 560,280 Q545,320 520,345 Q500,325 495,290 Q480,250 478,210 Q475,175 500,155 Z",
+    "M565,90 Q600,40 680,32 Q760,28 830,50 Q880,70 895,120 Q900,160 870,190 Q840,220 800,240 Q760,260 720,250 Q680,270 650,240 Q610,220 590,180 Q565,140 565,90 Z",
+    "M795,335 Q860,325 895,350 Q905,375 880,395 Q845,410 810,400 Q785,385 780,360 Q782,345 795,335 Z"
+  ];
+
+  function buildWorldMap(){
+    var svg = document.getElementById("worldMap");
+    var parts = [];
+    for (var gx = 0; gx <= 1000; gx += 100) parts.push('<line class="map-grid-line" x1="'+gx+'" y1="0" x2="'+gx+'" y2="500"/>');
+    for (var gy = 0; gy <= 500; gy += 100) parts.push('<line class="map-grid-line" x1="0" y1="'+gy+'" x2="1000" y2="'+gy+'"/>');
+    CONTINENTS.forEach(function(d){ parts.push('<path class="map-continent" d="'+d+'"/>'); });
+    CITIES.forEach(function(c,i){
+      parts.push('<circle class="city-marker" id="marker-'+i+'" cx="'+c.x+'" cy="'+c.y+'" r="4.5" data-idx="'+i+'"></circle>');
+    });
+    svg.innerHTML = parts.join("");
+
+    var cardsWrap = document.getElementById("cityCards");
+    cardsWrap.innerHTML = "";
+    CITIES.forEach(function(c,i){
+      var card = document.createElement("div");
+      card.className = "city-card";
+      card.dataset.idx = i;
+      card.innerHTML =
+        '<div class="city-name">' + c.flag + " " + c.name + '</div>' +
+        '<div class="city-country">' + c.country + '</div>' +
+        '<div class="city-time readout" id="city-time-'+i+'">--:--:--</div>' +
+        '<div class="city-date" id="city-date-'+i+'"></div>';
+      cardsWrap.appendChild(card);
+      card.addEventListener("mouseenter", function(){ highlightCity(i,true); });
+      card.addEventListener("mouseleave", function(){ highlightCity(i,false); });
+    });
+  }
+  function highlightCity(i,on){
+    var card = document.querySelector('.city-card[data-idx="'+i+'"]');
+    var marker = document.getElementById("marker-"+i);
+    if (card) card.classList.toggle("highlight", on);
+    if (marker) marker.setAttribute("r", on ? "6.5" : "4.5");
   }
 
-  // Função para adicionar uma nova tarefa
-  function adicionarTarefa(){
-    var tarefaInput = document.getElementById("tarefaInput");
-    var tarefaText = tarefaInput.value.trim();
-    if(tarefaText === ""){
-      alert("Insira uma tarefa válida.");
+  function tickWorldClock(){
+    CITIES.forEach(function(c,i){
+      var fmt = new Intl.DateTimeFormat("pt-BR", { timeZone:c.tz, hour:"2-digit", minute:"2-digit", second:"2-digit", day:"2-digit", month:"2-digit", hourCycle:"h23" });
+      var parts = fmt.formatToParts(new Date());
+      var map = {};
+      parts.forEach(function(p){ map[p.type] = p.value; });
+      var timeEl = document.getElementById("city-time-"+i);
+      var dateEl = document.getElementById("city-date-"+i);
+      if (timeEl) timeEl.textContent = map.hour + ":" + map.minute + ":" + map.second;
+      if (dateEl) dateEl.textContent = map.day + "/" + map.month;
+      var hourNum = parseInt(map.hour, 10);
+      var isDay = hourNum >= 6 && hourNum < 18;
+      var marker = document.getElementById("marker-"+i);
+      if (marker) marker.classList.toggle("day", isDay);
+    });
+  }
+  buildWorldMap();
+
+  /* ================= Relógio ================= */
+  var clock24h = true;
+  document.getElementById("clockFormatBtn").addEventListener("click", function(){
+    clock24h = !clock24h;
+    this.textContent = clock24h ? "Formato 24h" : "Formato 12h";
+    tickClock();
+  });
+  function tickClock(){
+    var now = new Date();
+    var fmt = new Intl.DateTimeFormat("pt-BR", { hour:"2-digit", minute:"2-digit", second:"2-digit", hourCycle: clock24h ? "h23" : "h12" });
+    document.getElementById("clockTime").textContent = fmt.format(now);
+    var fmtDate = new Intl.DateTimeFormat("pt-BR", { weekday:"long", day:"numeric", month:"long", year:"numeric" });
+    var s = fmtDate.format(now);
+    document.getElementById("clockDate").textContent = s.charAt(0).toUpperCase() + s.slice(1);
+  }
+
+  /* ================= Contador de Dias ================= */
+  document.getElementById("diasCalcularBtn").addEventListener("click", function(){
+    var iStr = document.getElementById("diasInicial").value;
+    var fStr = document.getElementById("diasFinal").value;
+    if (!iStr || !fStr) { showToast("Preencha as duas datas"); return; }
+    var di = new Date(iStr + "T00:00:00");
+    var df = new Date(fStr + "T00:00:00");
+    var hoje = new Date(); hoje.setHours(0,0,0,0);
+    var totalDias = Math.round((df - di) / 86400000);
+    var passados = Math.round((hoje - di) / 86400000);
+    var restantes = Math.round((df - hoje) / 86400000);
+    document.getElementById("diasTotal").textContent = totalDias + (Math.abs(totalDias)===1?" dia":" dias");
+    document.getElementById("diasPassados").textContent = passados + (Math.abs(passados)===1?" dia":" dias");
+    document.getElementById("diasRestantes").textContent = restantes + (Math.abs(restantes)===1?" dia":" dias");
+    document.getElementById("diasResultCard").classList.remove("hidden");
+  });
+
+  /* ================= Cronômetro ================= */
+  var cronoRunning = false, cronoStart = 0, cronoElapsed = 0, cronoInterval = null, cronoLaps = [];
+  function cronoFormat(ms){
+    var totalCs = Math.floor(ms / 10);
+    var cs = totalCs % 100;
+    var totalSec = Math.floor(totalCs / 100);
+    var s = totalSec % 60;
+    var m = Math.floor(totalSec / 60);
+    return pad2(m) + ":" + pad2(s) + "." + pad2(cs);
+  }
+  function cronoTick(){
+    var elapsed = cronoElapsed + (Date.now() - cronoStart);
+    document.getElementById("cronoDisplay").textContent = cronoFormat(elapsed);
+  }
+  document.getElementById("cronoStartBtn").addEventListener("click", function(){
+    if (!cronoRunning){
+      cronoRunning = true; cronoStart = Date.now();
+      cronoInterval = setInterval(cronoTick, 30);
+      this.textContent = "Pausar";
+    } else {
+      cronoRunning = false; cronoElapsed += Date.now() - cronoStart;
+      clearInterval(cronoInterval);
+      this.textContent = "Continuar";
+    }
+  });
+  document.getElementById("cronoLapBtn").addEventListener("click", function(){
+    var elapsed = cronoElapsed + (cronoRunning ? (Date.now() - cronoStart) : 0);
+    cronoLaps.push(elapsed);
+    var list = document.getElementById("cronoLapsList");
+    var row = document.createElement("div");
+    row.className = "result-row";
+    row.innerHTML = '<span class="result-label">Volta ' + cronoLaps.length + '</span><span class="result-value">' + cronoFormat(elapsed) + '</span>';
+    list.appendChild(row);
+    document.getElementById("cronoLapsCard").classList.remove("hidden");
+  });
+  document.getElementById("cronoResetBtn").addEventListener("click", function(){
+    cronoRunning = false; cronoElapsed = 0; cronoLaps = [];
+    clearInterval(cronoInterval);
+    document.getElementById("cronoDisplay").textContent = "00:00.00";
+    document.getElementById("cronoStartBtn").textContent = "Iniciar";
+    document.getElementById("cronoLapsList").innerHTML = "";
+    document.getElementById("cronoLapsCard").classList.add("hidden");
+  });
+
+  /* ================= Temporizador ================= */
+  var temRemaining = 0, temRunning = false, temInterval = null;
+  function temFormat(sec){
+    sec = Math.max(0, sec);
+    var m = Math.floor(sec / 60), s = sec % 60;
+    return pad2(m) + ":" + pad2(s);
+  }
+  function temUpdateDisplay(){ document.getElementById("temDisplay").textContent = temFormat(temRemaining); }
+  function temBeep(){
+    try{
+      var Ctx = window.AudioContext || window.webkitAudioContext;
+      var ctx = new Ctx();
+      [0,0.5,1].forEach(function(delay){
+        setTimeout(function(){
+          var o = ctx.createOscillator(), g = ctx.createGain();
+          o.type = "sine"; o.frequency.value = 880;
+          o.connect(g); g.connect(ctx.destination);
+          g.gain.setValueAtTime(0.0001, ctx.currentTime);
+          g.gain.exponentialRampToValueAtTime(0.25, ctx.currentTime + 0.01);
+          g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.35);
+          o.start(); o.stop(ctx.currentTime + 0.36);
+        }, delay*1000);
+      });
+    }catch(e){}
+  }
+  document.querySelectorAll("[data-preset]").forEach(function(btn){
+    btn.addEventListener("click", function(){
+      var total = parseInt(this.dataset.preset, 10);
+      document.getElementById("temMin").value = Math.floor(total/60);
+      document.getElementById("temSeg").value = total%60;
+      temRemaining = total;
+      temUpdateDisplay();
+    });
+  });
+  document.getElementById("temStartBtn").addEventListener("click", function(){
+    if (temRunning) return;
+    if (temRemaining <= 0){
+      var min = parseInt(document.getElementById("temMin").value, 10) || 0;
+      var seg = parseInt(document.getElementById("temSeg").value, 10) || 0;
+      temRemaining = min*60 + seg;
+    }
+    if (temRemaining <= 0){ showToast("Defina um tempo maior que zero"); return; }
+    temRunning = true;
+    document.getElementById("temStatus").textContent = "";
+    temInterval = setInterval(function(){
+      temRemaining--;
+      temUpdateDisplay();
+      if (temRemaining <= 0){
+        clearInterval(temInterval);
+        temRunning = false;
+        document.getElementById("temStatus").textContent = "Tempo esgotado!";
+        temBeep();
+      }
+    }, 1000);
+  });
+  document.getElementById("temPauseBtn").addEventListener("click", function(){
+    temRunning = false;
+    clearInterval(temInterval);
+  });
+  document.getElementById("temResetBtn").addEventListener("click", function(){
+    temRunning = false; temRemaining = 0;
+    clearInterval(temInterval);
+    document.getElementById("temStatus").textContent = "";
+    document.getElementById("temMin").value = "";
+    document.getElementById("temSeg").value = "";
+    temUpdateDisplay();
+  });
+  temUpdateDisplay();
+
+  /* ================= TMB & IMC ================= */
+  document.getElementById("tmbCalcularBtn").addEventListener("click", function(){
+    var peso = parseFloat(document.getElementById("tmbPeso").value);
+    var altura = parseFloat(document.getElementById("tmbAltura").value);
+    var idade = parseFloat(document.getElementById("tmbIdade").value);
+    var sexo = document.getElementById("tmbSexo").value;
+    var fator = parseFloat(document.getElementById("tmbAtividade").value);
+    if (!peso || !altura || !idade){ showToast("Preencha peso, altura e idade"); return; }
+
+    var alturaM = altura/100;
+    var imc = peso / (alturaM*alturaM);
+    var imcLabel, imcCls;
+    if (imc < 18.5){ imcLabel="Abaixo do peso"; imcCls="warn"; }
+    else if (imc < 25){ imcLabel="Peso normal"; imcCls="ok"; }
+    else if (imc < 30){ imcLabel="Sobrepeso"; imcCls="warn"; }
+    else if (imc < 35){ imcLabel="Obesidade grau I"; imcCls="bad"; }
+    else if (imc < 40){ imcLabel="Obesidade grau II"; imcCls="bad"; }
+    else { imcLabel="Obesidade grau III"; imcCls="bad"; }
+
+    var tmb = sexo === "m"
+      ? (10*peso + 6.25*altura - 5*idade + 5)
+      : (10*peso + 6.25*altura - 5*idade - 161);
+    var manutencao = tmb*fator;
+
+    document.getElementById("tmbImcValor").textContent = formatNum(imc);
+    document.getElementById("tmbImcBadge").innerHTML = '<span class="badge '+imcCls+'">'+imcLabel+'</span>';
+    document.getElementById("tmbTmbValor").textContent = formatNum(tmb) + " kcal";
+    document.getElementById("tmbManutencao").textContent = formatNum(manutencao) + " kcal";
+    document.getElementById("tmbDeficit").textContent = formatNum(manutencao - 500) + " kcal";
+    document.getElementById("tmbSuperavit").textContent = formatNum(manutencao + 500) + " kcal";
+    document.getElementById("tmbResultCard").classList.remove("hidden");
+  });
+
+  /* ================= Calculadora ================= */
+  var calcState = { current:"0", previous:null, operator:null, overwrite:true };
+  function opSymbol(op){ return {add:"+",sub:"−",mul:"×",div:"÷"}[op] || ""; }
+  function calcFormat(numStr){
+    if (numStr === "Erro") return numStr;
+    var num = parseFloat(numStr);
+    if (isNaN(num)) return "0";
+    var s = num.toString();
+    if (s.length > 14) s = num.toPrecision(10).toString();
+    return s;
+  }
+  function calcUpdateDisplay(){
+    document.getElementById("calcCurrent").textContent = calcFormat(calcState.current);
+    document.getElementById("calcExpr").textContent = calcState.previous !== null ? (calcFormat(String(calcState.previous)) + " " + opSymbol(calcState.operator)) : "";
+  }
+  function calcClear(){ calcState = { current:"0", previous:null, operator:null, overwrite:true }; calcUpdateDisplay(); }
+  function calcInputDigit(d){
+    if (calcState.current === "Erro"){ calcState.current = "0"; calcState.overwrite = true; }
+    if (calcState.overwrite){ calcState.current = d === "." ? "0." : d; calcState.overwrite = false; }
+    else {
+      if (d === "." && calcState.current.indexOf(".") !== -1) return;
+      if (calcState.current === "0" && d !== ".") calcState.current = d;
+      else calcState.current += d;
+    }
+    calcUpdateDisplay();
+  }
+  function calcCompute(){
+    if (calcState.operator === null || calcState.previous === null) return;
+    var a = calcState.previous, b = parseFloat(calcState.current), r;
+    switch(calcState.operator){
+      case "add": r = a+b; break;
+      case "sub": r = a-b; break;
+      case "mul": r = a*b; break;
+      case "div": r = b===0 ? NaN : a/b; break;
+    }
+    calcState.current = isNaN(r) ? "Erro" : String(r);
+    calcState.operator = null; calcState.previous = null; calcState.overwrite = true;
+    calcUpdateDisplay();
+  }
+  function calcChooseOperator(op){
+    if (calcState.operator && !calcState.overwrite) calcCompute();
+    calcState.previous = parseFloat(calcState.current);
+    calcState.operator = op;
+    calcState.overwrite = true;
+    calcUpdateDisplay();
+  }
+  function calcToggleSign(){
+    if (calcState.current === "0" || calcState.current === "Erro") return;
+    calcState.current = calcState.current.charAt(0)==="-" ? calcState.current.slice(1) : "-"+calcState.current;
+    calcUpdateDisplay();
+  }
+  function calcPercent(){
+    calcState.current = String(parseFloat(calcState.current) / 100);
+    calcState.overwrite = true;
+    calcUpdateDisplay();
+  }
+  document.getElementById("calcGrid").addEventListener("click", function(ev){
+    var btn = ev.target.closest("button");
+    if (!btn) return;
+    if (btn.dataset.digit !== undefined) calcInputDigit(btn.dataset.digit);
+    else if (btn.dataset.op !== undefined) calcChooseOperator(btn.dataset.op);
+    else if (btn.dataset.action === "clear") calcClear();
+    else if (btn.dataset.action === "sign") calcToggleSign();
+    else if (btn.dataset.action === "percent") calcPercent();
+    else if (btn.dataset.action === "equals") calcCompute();
+  });
+  calcUpdateDisplay();
+
+  /* ================= Porcentagem ================= */
+  function pctWire(ids, fn){
+    ids.forEach(function(id){
+      document.getElementById(id).addEventListener("input", fn);
+    });
+    var sel = ids.find(function(){ return false; });
+  }
+  function pctRecalcA(){
+    var p = parseFloat(document.getElementById("pctA1").value);
+    var v = parseFloat(document.getElementById("pctA2").value);
+    document.getElementById("pctAResult").textContent = (isNaN(p)||isNaN(v)) ? "—" : formatNum(v*p/100);
+  }
+  function pctRecalcB(){
+    var x = parseFloat(document.getElementById("pctB1").value);
+    var t = parseFloat(document.getElementById("pctB2").value);
+    document.getElementById("pctBResult").textContent = (isNaN(x)||isNaN(t)||t===0) ? "—" : formatNum(x/t*100) + "%";
+  }
+  function pctRecalcC(){
+    var v = parseFloat(document.getElementById("pctC1").value);
+    var p = parseFloat(document.getElementById("pctC2").value);
+    var tipo = document.getElementById("pctCTipo").value;
+    if (isNaN(v)||isNaN(p)){ document.getElementById("pctCResult").textContent = "—"; return; }
+    var r = tipo === "up" ? v*(1+p/100) : v*(1-p/100);
+    document.getElementById("pctCResult").textContent = formatNum(r);
+  }
+  ["pctA1","pctA2"].forEach(function(id){ document.getElementById(id).addEventListener("input", pctRecalcA); });
+  ["pctB1","pctB2"].forEach(function(id){ document.getElementById(id).addEventListener("input", pctRecalcB); });
+  ["pctC1","pctC2"].forEach(function(id){ document.getElementById(id).addEventListener("input", pctRecalcC); });
+  document.getElementById("pctCTipo").addEventListener("change", pctRecalcC);
+
+  /* ================= Conversor de Unidades ================= */
+  var UNIT_TABLES = {
+    comprimento: [
+      {key:"m",label:"Metro (m)",f:1}, {key:"km",label:"Quilômetro (km)",f:1000},
+      {key:"cm",label:"Centímetro (cm)",f:0.01}, {key:"mm",label:"Milímetro (mm)",f:0.001},
+      {key:"mi",label:"Milha (mi)",f:1609.344}, {key:"yd",label:"Jarda (jd)",f:0.9144},
+      {key:"ft",label:"Pé (ft)",f:0.3048}, {key:"in",label:"Polegada (in)",f:0.0254}
+    ],
+    peso: [
+      {key:"kg",label:"Quilograma (kg)",f:1}, {key:"g",label:"Grama (g)",f:0.001},
+      {key:"mg",label:"Miligrama (mg)",f:0.000001}, {key:"ton",label:"Tonelada (t)",f:1000},
+      {key:"lb",label:"Libra (lb)",f:0.453592}, {key:"oz",label:"Onça (oz)",f:0.0283495}
+    ],
+    volume: [
+      {key:"l",label:"Litro (l)",f:1}, {key:"ml",label:"Mililitro (ml)",f:0.001},
+      {key:"m3",label:"Metro cúbico (m³)",f:1000}, {key:"gal",label:"Galão (gal)",f:3.78541},
+      {key:"qt",label:"Quarto (qt)",f:0.946353}, {key:"cup",label:"Xícara",f:0.24}
+    ],
+    velocidade: [
+      {key:"ms",label:"Metro/segundo (m/s)",f:1}, {key:"kmh",label:"Km/h",f:0.277778},
+      {key:"mph",label:"Milha/h (mph)",f:0.44704}, {key:"kn",label:"Nó",f:0.514444}
+    ],
+    area: [
+      {key:"m2",label:"Metro² (m²)",f:1}, {key:"km2",label:"Km² (km²)",f:1000000},
+      {key:"ha",label:"Hectare (ha)",f:10000}, {key:"ft2",label:"Pé² (ft²)",f:0.092903},
+      {key:"acre",label:"Acre",f:4046.86}
+    ]
+  };
+  var TEMP_UNITS = [ {key:"C",label:"Celsius (°C)"}, {key:"F",label:"Fahrenheit (°F)"}, {key:"K",label:"Kelvin (K)"} ];
+
+  function unitPopulate(){
+    var cat = document.getElementById("unitCategoria").value;
+    var deSel = document.getElementById("unitDe"), paraSel = document.getElementById("unitPara");
+    var list = cat === "temperatura" ? TEMP_UNITS : UNIT_TABLES[cat];
+    deSel.innerHTML = ""; paraSel.innerHTML = "";
+    list.forEach(function(u, idx){
+      var o1 = document.createElement("option"); o1.value = u.key; o1.textContent = u.label;
+      var o2 = document.createElement("option"); o2.value = u.key; o2.textContent = u.label;
+      if (idx === 0) o1.selected = true;
+      if (idx === 1) o2.selected = true; else if (idx===0 && list.length===1) o2.selected = true;
+      deSel.appendChild(o1); paraSel.appendChild(o2);
+    });
+    unitConvert();
+  }
+  function convertTemp(v, from, to){
+    var c;
+    if (from === "C") c = v; else if (from === "F") c = (v-32)*5/9; else c = v-273.15;
+    if (to === "C") return c; if (to === "F") return c*9/5+32; return c+273.15;
+  }
+  function unitConvert(){
+    var cat = document.getElementById("unitCategoria").value;
+    var val = parseFloat(document.getElementById("unitValor").value);
+    var from = document.getElementById("unitDe").value;
+    var to = document.getElementById("unitPara").value;
+    var out = document.getElementById("unitResultado");
+    if (isNaN(val)){ out.textContent = "—"; return; }
+    if (cat === "temperatura"){
+      out.textContent = formatNum(convertTemp(val, from, to));
       return;
     }
-    adicionarTarefaNaLista(tarefaText, false);
-    tarefaInput.value = "";
+    var table = UNIT_TABLES[cat];
+    var fromObj = table.find(function(u){ return u.key===from; });
+    var toObj = table.find(function(u){ return u.key===to; });
+    if (!fromObj || !toObj){ out.textContent = "—"; return; }
+    out.textContent = formatNum(val * fromObj.f / toObj.f);
   }
+  document.getElementById("unitCategoria").addEventListener("change", unitPopulate);
+  document.getElementById("unitValor").addEventListener("input", unitConvert);
+  document.getElementById("unitDe").addEventListener("change", unitConvert);
+  document.getElementById("unitPara").addEventListener("change", unitConvert);
+  unitPopulate();
 
-  // Função para salvar todas as tarefas atuais no localStorage
-  function salvarTarefas(){
-    var listaTarefas = document.getElementById("listaTarefas").getElementsByTagName("li");
-    var tarefas = [];
-    for (var i = 0; i < listaTarefas.length; i++){
-      tarefas.push({
-        texto: listaTarefas[i].innerText,
-        completada: listaTarefas[i].classList.contains("completada")
+  /* ================= Gerador de Senha ================= */
+  var senhaLenEl = document.getElementById("senhaLen");
+  senhaLenEl.addEventListener("input", function(){ document.getElementById("senhaLenLabel").textContent = this.value; });
+  function generatePassword(){
+    var length = parseInt(senhaLenEl.value, 10);
+    var pools = [];
+    if (document.getElementById("senhaMai").checked) pools.push("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
+    if (document.getElementById("senhaMin").checked) pools.push("abcdefghijklmnopqrstuvwxyz");
+    if (document.getElementById("senhaNum").checked) pools.push("0123456789");
+    if (document.getElementById("senhaSim").checked) pools.push("!@#$%^&*()-_=+[]{}");
+    if (!pools.length){ showToast("Selecione ao menos um tipo de caractere"); return; }
+    var charset = pools.join("");
+    var arr = new Uint32Array(length);
+    (window.crypto || window.msCrypto).getRandomValues(arr);
+    var out = "";
+    for (var i=0;i<length;i++){ out += charset[arr[i] % charset.length]; }
+    document.getElementById("senhaOutput").textContent = out;
+    var entropy = length * Math.log2(charset.length || 1);
+    var pct, cls, label;
+    if (entropy < 28){ pct=15; cls="bad"; label="Muito fraca"; }
+    else if (entropy < 36){ pct=35; cls="bad"; label="Fraca"; }
+    else if (entropy < 60){ pct=60; cls="warn"; label="Média"; }
+    else if (entropy < 90){ pct=85; cls="ok"; label="Forte"; }
+    else { pct=100; cls="ok"; label="Muito forte"; }
+    var bar = document.getElementById("senhaStrengthBar");
+    bar.style.width = pct + "%";
+    bar.style.background = cls==="ok" ? "var(--positive)" : cls==="warn" ? "var(--accent)" : "var(--danger)";
+    document.getElementById("senhaStrengthLabel").textContent = "Força estimada: " + label;
+  }
+  document.getElementById("senhaGerarBtn").addEventListener("click", generatePassword);
+  document.getElementById("senhaCopyBtn").addEventListener("click", function(){
+    var v = document.getElementById("senhaOutput").textContent;
+    if (v && v !== "—") copyText(v);
+  });
+  generatePassword();
+
+  /* ================= Hash & Base64 ================= */
+  function bufToHex(buf){
+    return Array.prototype.map.call(new Uint8Array(buf), function(b){ return b.toString(16).padStart(2,"0"); }).join("");
+  }
+  document.querySelectorAll("[data-hash]").forEach(function(btn){
+    btn.addEventListener("click", function(){
+      var algo = this.dataset.hash;
+      var text = document.getElementById("hashInput").value;
+      if (!text){ showToast("Digite um texto"); return; }
+      var enc = new TextEncoder().encode(text);
+      crypto.subtle.digest(algo, enc).then(function(buf){
+        var hex = bufToHex(buf);
+        var results = document.getElementById("hashResults");
+        var row = document.createElement("div");
+        row.className = "copy-row";
+        row.innerHTML = '<span class="copy-val">' + algo + ": " + hex + '</span><button class="copy-btn">Copiar</button>';
+        row.querySelector(".copy-btn").addEventListener("click", function(){ copyText(hex); });
+        results.insertBefore(row, results.firstChild);
+      }).catch(function(){ showToast("Não foi possível gerar o hash"); });
+    });
+  });
+  document.getElementById("b64EncodeBtn").addEventListener("click", function(){
+    var text = document.getElementById("b64Input").value;
+    try{
+      var out = btoa(unescape(encodeURIComponent(text)));
+      document.getElementById("b64Result").textContent = out;
+      document.getElementById("b64ResultRow").classList.remove("hidden");
+    }catch(e){ showToast("Não foi possível codificar"); }
+  });
+  document.getElementById("b64DecodeBtn").addEventListener("click", function(){
+    var text = document.getElementById("b64Input").value;
+    try{
+      var out = decodeURIComponent(escape(atob(text)));
+      document.getElementById("b64Result").textContent = out;
+      document.getElementById("b64ResultRow").classList.remove("hidden");
+    }catch(e){ showToast("Texto Base64 inválido"); }
+  });
+  document.getElementById("b64CopyBtn").addEventListener("click", function(){
+    copyText(document.getElementById("b64Result").textContent);
+  });
+
+  /* ================= Bloco de Notas ================= */
+  var NOTAS_KEY = "notas-v1";
+  var notasArea = document.getElementById("notasArea");
+  var notasIndicator = document.getElementById("notasSaveIndicator");
+  var notasSaveTimer = null;
+  storageAPI.get(NOTAS_KEY).then(function(res){ notasArea.value = res.value; }).catch(function(){});
+  notasArea.addEventListener("input", function(){
+    clearTimeout(notasSaveTimer);
+    notasSaveTimer = setTimeout(function(){
+      storageAPI.set(NOTAS_KEY, notasArea.value).then(function(){
+        notasIndicator.classList.add("show");
+        setTimeout(function(){ notasIndicator.classList.remove("show"); }, 1200);
       });
-    }
-    localStorage.setItem("tarefas", JSON.stringify(tarefas));
-  }
+    }, 500);
+  });
+  document.getElementById("notasLimparBtn").addEventListener("click", function(){
+    if (!confirm("Deseja limpar todas as anotações?")) return;
+    notasArea.value = "";
+    storageAPI.set(NOTAS_KEY, "");
+  });
 
-  // Função para limpar todas as tarefas da lista e do localStorage
-  function limparTarefas(){
-    if(confirm("Deseja realmente limpar todas as tarefas?")){
-      document.getElementById("listaTarefas").innerHTML = "";
-      localStorage.removeItem("tarefas");
+  /* ================= Lista de Tarefas ================= */
+  var TAREFAS_KEY = "tarefas-v1";
+  var tarefas = [];
+  function tarefasSave(){ storageAPI.set(TAREFAS_KEY, JSON.stringify(tarefas)); }
+  function tarefasRender(){
+    var list = document.getElementById("tarefasList");
+    list.innerHTML = "";
+    if (!tarefas.length){
+      list.innerHTML = '<div class="task-empty">Nenhuma tarefa ainda</div>';
+      return;
     }
+    tarefas.forEach(function(t){
+      var row = document.createElement("div");
+      row.className = "task-row" + (t.done ? " done" : "");
+      var check = document.createElement("button");
+      check.className = "task-check" + (t.done ? " done" : "");
+      check.addEventListener("click", function(){ t.done = !t.done; tarefasSave(); tarefasRender(); });
+      var text = document.createElement("div");
+      text.className = "task-text";
+      text.textContent = t.texto;
+      var del = document.createElement("button");
+      del.className = "task-del";
+      del.innerHTML = '<svg viewBox="0 0 24 24"><path d="M6 6L18 18M18 6L6 18" stroke-width="2"/></svg>';
+      del.addEventListener("click", function(){ tarefas = tarefas.filter(function(x){ return x.id !== t.id; }); tarefasSave(); tarefasRender(); });
+      row.appendChild(check); row.appendChild(text); row.appendChild(del);
+      list.appendChild(row);
+    });
   }
+  function tarefasAdd(){
+    var input = document.getElementById("tarefaInput");
+    var texto = input.value.trim();
+    if (!texto) return;
+    tarefas.push({ id:Date.now()+"-"+Math.random().toString(16).slice(2), texto:texto, done:false });
+    input.value = "";
+    tarefasSave(); tarefasRender();
+  }
+  document.getElementById("tarefaAddBtn").addEventListener("click", tarefasAdd);
+  document.getElementById("tarefaInput").addEventListener("keydown", function(ev){ if (ev.key === "Enter") tarefasAdd(); });
+  document.getElementById("tarefasLimparBtn").addEventListener("click", function(){
+    tarefas = tarefas.filter(function(t){ return !t.done; });
+    tarefasSave(); tarefasRender();
+  });
+  storageAPI.get(TAREFAS_KEY).then(function(res){
+    try{ tarefas = JSON.parse(res.value) || []; }catch(e){ tarefas = []; }
+    tarefasRender();
+  }).catch(function(){ tarefasRender(); });
 
-  // Carrega as tarefas salvas ao carregar a página
-  window.onload = function() {
-    carregarTarefas();
+  /* ================= Contador de Texto ================= */
+  document.getElementById("textoArea").addEventListener("input", function(){
+    var v = this.value;
+    var chars = v.length;
+    var charsNoSpace = v.replace(/\s/g, "").length;
+    var words = v.trim() === "" ? 0 : v.trim().split(/\s+/).length;
+    var sentences = (v.match(/[.!?]+/g) || []).length;
+    var paragraphs = v.split(/\n+/).filter(function(p){ return p.trim() !== ""; }).length;
+    var reading = Math.max(1, Math.round(words/200));
+    document.getElementById("textoChars").textContent = chars;
+    document.getElementById("textoCharsNoSpace").textContent = charsNoSpace;
+    document.getElementById("textoWords").textContent = words;
+    document.getElementById("textoSentences").textContent = sentences;
+    document.getElementById("textoParagraphs").textContent = paragraphs;
+    document.getElementById("textoReading").textContent = "~" + reading + " min";
+  });
+
+  /* ================= Seletor de Cores ================= */
+  function hexToRgb(hex){
+    hex = hex.replace("#","");
+    if (hex.length===3) hex = hex.split("").map(function(c){return c+c;}).join("");
+    var num = parseInt(hex,16);
+    return { r:(num>>16)&255, g:(num>>8)&255, b:num&255 };
   }
-  </script>
+  function rgbToHex(r,g,b){
+    return "#"+[r,g,b].map(function(x){ return Math.max(0,Math.min(255,Math.round(x))).toString(16).padStart(2,"0"); }).join("");
+  }
+  function rgbToHsl(r,g,b){
+    r/=255; g/=255; b/=255;
+    var max=Math.max(r,g,b), min=Math.min(r,g,b), h,s,l=(max+min)/2;
+    if (max===min){ h=s=0; }
+    else{
+      var d=max-min;
+      s = l>0.5 ? d/(2-max-min) : d/(max+min);
+      switch(max){
+        case r: h=(g-b)/d+(g<b?6:0); break;
+        case g: h=(b-r)/d+2; break;
+        default: h=(r-g)/d+4;
+      }
+      h/=6;
+    }
+    return { h:Math.round(h*360), s:Math.round(s*100), l:Math.round(l*100) };
+  }
+  function hslToRgb(h,s,l){
+    h/=360; s/=100; l/=100;
+    var r,g,b;
+    if (s===0){ r=g=b=l; }
+    else{
+      var hue2rgb=function(p,q,t){
+        if(t<0)t+=1; if(t>1)t-=1;
+        if(t<1/6) return p+(q-p)*6*t;
+        if(t<1/2) return q;
+        if(t<2/3) return p+(q-p)*(2/3-t)*6;
+        return p;
+      };
+      var q = l<0.5 ? l*(1+s) : l+s-l*s;
+      var p = 2*l-q;
+      r=hue2rgb(p,q,h+1/3); g=hue2rgb(p,q,h); b=hue2rgb(p,q,h-1/3);
+    }
+    return { r:Math.round(r*255), g:Math.round(g*255), b:Math.round(b*255) };
+  }
+  function corUpdate(){
+    var hex = document.getElementById("corInput").value;
+    var rgb = hexToRgb(hex);
+    var hsl = rgbToHsl(rgb.r, rgb.g, rgb.b);
+    document.getElementById("corPreview").style.background = hex;
+    document.getElementById("corHex").textContent = hex.toUpperCase();
+    document.getElementById("corRgb").textContent = "rgb(" + rgb.r + ", " + rgb.g + ", " + rgb.b + ")";
+    document.getElementById("corHsl").textContent = "hsl(" + hsl.h + ", " + hsl.s + "%, " + hsl.l + "%)";
+
+    var paletteEl = document.getElementById("corPalette");
+    paletteEl.innerHTML = "";
+    [-30,-15,0,15,30].forEach(function(delta){
+      var l2 = Math.max(4, Math.min(96, hsl.l + delta));
+      var rgb2 = hslToRgb(hsl.h, hsl.s, l2);
+      var hex2 = rgbToHex(rgb2.r, rgb2.g, rgb2.b);
+      var sw = document.createElement("div");
+      sw.className = "palette-swatch";
+      sw.style.background = hex2;
+      sw.innerHTML = "<span>" + hex2.toUpperCase() + "</span>";
+      sw.addEventListener("click", function(){ copyText(hex2.toUpperCase()); });
+      paletteEl.appendChild(sw);
+    });
+  }
+  document.getElementById("corInput").addEventListener("input", corUpdate);
+  document.querySelectorAll("[data-copy-target]").forEach(function(btn){
+    btn.addEventListener("click", function(){ copyText(document.getElementById(this.dataset.copyTarget).textContent); });
+  });
+  corUpdate();
+
+  /* ================= Bases Numéricas ================= */
+  var baseDec = document.getElementById("baseDec");
+  var baseBin = document.getElementById("baseBin");
+  var baseOct = document.getElementById("baseOct");
+  var baseHex = document.getElementById("baseHex");
+  function baseSyncFrom(field, radix, regex){
+    field.addEventListener("input", function(){
+      var v = this.value.trim();
+      [baseDec,baseBin,baseOct,baseHex].forEach(function(f){ f.classList.remove("invalid"); });
+      if (v === ""){ [baseDec,baseBin,baseOct,baseHex].forEach(function(f){ if(f!==field) f.value=""; }); return; }
+      if (!regex.test(v)){ field.classList.add("invalid"); return; }
+      var num = parseInt(v, radix);
+      if (isNaN(num)) { field.classList.add("invalid"); return; }
+      if (field !== baseDec) baseDec.value = num.toString(10);
+      if (field !== baseBin) baseBin.value = num.toString(2);
+      if (field !== baseOct) baseOct.value = num.toString(8);
+      if (field !== baseHex) baseHex.value = num.toString(16).toUpperCase();
+    });
+  }
+  baseSyncFrom(baseDec, 10, /^[0-9]+$/);
+  baseSyncFrom(baseBin, 2, /^[01]+$/);
+  baseSyncFrom(baseOct, 8, /^[0-7]+$/);
+  baseSyncFrom(baseHex, 16, /^[0-9a-fA-F]+$/);
+
+  /* ================= global tick ================= */
+  function globalTick(){
+    tickClock();
+    tickWorldClock();
+  }
+  globalTick();
+  setInterval(globalTick, 1000);
+
+  showHome();
+})();
+</script>
 </body>
 </html>
